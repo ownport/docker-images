@@ -12,7 +12,9 @@ case ${1} in
     update-base-images)
         echo "[INFO] Updating base images" && \
             docker pull alpine:3.12
+            docker pull alpine:3.13
             docker pull ubuntu:20.04
+            docker pull ubuntu:20.10
         ;;
     build)
         shift
