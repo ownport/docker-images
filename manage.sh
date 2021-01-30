@@ -57,16 +57,18 @@ case ${1} in
             echo "[ERROR] Please specify the image name by 'image' parameter"
             exit 1
         } || {
-            echo "[INFO] Tesing image: ${DOCKERFILE_PATH}"
+            echo "[INFO] Tesing image from directory: ${DOCKERFILE_PATH}"
             cd ${DOCKERFILE_PATH}
             source metadata
 
             # Set GitLab Docker Image
             GITLAB_DOCKER_IMAGE=${GITLAB_DOCKER_REGISTRY}/${GITLAB_GROUP}/${GITLAB_PROJECT}/${DOCKER_IMAGE_NAME}
 
+            echo "[INFO] GitLab Docker Image: ${GITLAB_DOCKER_IMAGE}:${DOCKER_IMAGE_VERSION}"
+
             # Run tests for docker image
-            docker run --rm -v $(pwd)/tests:/tests \
-		            ${GITLAB_DOCKER_IMAGE}:${DOCKER_IMAGE_VERSION} /tests/run-tests.sh
+            docker run --rm -v "$(pwd)/tests":/tests \
+		            ${GITLAB_DOCKER_IMAGE}:${DOCKER_IMAGE_VERSION} sh # /tests/run-tests.sh
         }
         ;;
     remove)
