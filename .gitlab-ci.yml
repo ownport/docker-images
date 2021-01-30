@@ -25,8 +25,17 @@ base_alpine_3_12:
     - ./manage.sh build images/base/alpine-3.12
     - ./manage.sh test images/base/alpine-3.12
     - ./manage.sh publish-to-gitlab-registry images/base/alpine-3.12
-  only:
-  - tags
+  # only:
+  # - tags
+
+base_alpine_3_13:
+  stage: base_image
+  script:
+    - ./manage.sh build images/base/alpine-3.13
+    - ./manage.sh test images/base/alpine-3.13
+    - ./manage.sh publish-to-gitlab-registry images/base/alpine-3.13
+  # only:
+  # - tags
 
 # dev_images:
 #   stage: dev_image
