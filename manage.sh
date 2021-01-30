@@ -107,7 +107,6 @@ case ${1} in
 
             # Push docker image(-s) to GitLab Docker Registry
             docker push ${GITLAB_DOCKER_IMAGE}:${DOCKER_IMAGE_VERSION} 
-            docker push ${GITLAB_DOCKER_IMAGE}:latest
         }
         ;;
     console)
