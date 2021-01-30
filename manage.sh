@@ -42,12 +42,11 @@ case ${1} in
             GITLAB_DOCKER_IMAGE=${GITLAB_DOCKER_REGISTRY}/${GITLAB_GROUP}/${GITLAB_PROJECT}/${DOCKER_IMAGE_NAME}
             
             # Use Docker caching
-            docker pull ${GITLAB_DOCKER_IMAGE}:latest || true
+            docker pull ${GITLAB_DOCKER_IMAGE}:${DOCKER_IMAGE_VERSION} || true
     
             # Build docker image
-            docker build --cache-from ${GITLAB_DOCKER_IMAGE}:latest \
-                --tag ${GITLAB_DOCKER_IMAGE}:${DOCKER_IMAGE_VERSION} \
-                --tag ${GITLAB_DOCKER_IMAGE}:latest .
+            docker build --cache-from ${GITLAB_DOCKER_IMAGE}:${DOCKER_IMAGE_VERSION} \
+                --tag ${GITLAB_DOCKER_IMAGE}:${DOCKER_IMAGE_VERSION} .
         }
         ;;
     test)
