@@ -1,0 +1,47 @@
+default:
+  image: docker:stable
+
+variables:
+  DOCKER_TLS_CERTDIR: "/certs"
+  
+services:
+  - docker:stable-dind
+
+# include:
+#   - template: Container-Scanning.gitlab-ci.yml
+  
+before_script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  - apk add bash
+
+stages:
+  - base_image
+  # - dev_image
+  # - dev_vscode_image
+
+base_alpine_3_12:
+  stage: base_image
+  script:
+    - ./manage.sh build images/base/alpine-3.12
+    - ./manage.sh test images/base/alpine-3.12
+    - ./manage.sh publish-to-gitlab-registry images/base/alpine-3.12
+  only:
+  - tags
+
+# dev_images:
+#   stage: dev_image
+#   script:
+#     - ./manage.sh build dev
+#     - ./manage.sh test dev
+#     - ./manage.sh publish-to-gitlab-registry dev
+#   only:
+#   - tags
+
+# dev_vscode_images:
+#   stage: dev_vscode_image
+#   script:
+#     - ./manage.sh build dev-vscode
+#     - ./manage.sh test dev-vscode
+#     - ./manage.sh publish-to-gitlab-registry dev-vscode
+#   only:
+#   - tags
