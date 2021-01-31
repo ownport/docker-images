@@ -70,6 +70,8 @@ python_3_8_alpine:
     - ./manage.sh build images/python/3.8-alpine
     - ./manage.sh test images/python/3.8-alpine
     - ./manage.sh publish-to-gitlab-registry images/python/3.8-alpine
+  dependecies:
+    - base_alpine_3_13
   # only:
   # - tags
 
@@ -79,6 +81,8 @@ python_3_8_dev_alpine:
     - ./manage.sh build images/python/3.8-dev-alpine
     - ./manage.sh test images/python/3.8-dev-alpine
     - ./manage.sh publish-to-gitlab-registry images/python/3.8-dev-alpine
+  dependecies:
+    - python_3_8_alpine
   # only:
   # - tags
 
@@ -88,6 +92,8 @@ python_3_8_dev_vscode_alpine:
     - ./manage.sh build images/python/3.8-dev-vscode-alpine
     - ./manage.sh test images/python/3.8-dev-vscode-alpine
     - ./manage.sh publish-to-gitlab-registry images/python/3.8-dev-vscode-alpine
+  dependecies:
+    - python_3_8_dev_alpine
   # only:
   # - tags
 
