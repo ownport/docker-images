@@ -65,14 +65,10 @@ EOM
                 /var/lib/apt/lists/* \
                 /tmp/*
         
-        echo "[INFO] Removing build deps" && {
-            BUILD_DEPS=$(apk info -q | grep .build-deps)
-            if [ -z "${BUILD_DEPS}" ]; then
-                echo "[WARNING] No .build-deps packages"
-            else
-                apk del .build-deps
-            fi
-        }
+        echo "[INFO] Removing build deps" && 
+            apk info -q .build-deps > /dev/null && 
+                apk del .build-deps || \
+                echo "[WARNING] No build dependecies "
         ;;
     *)
         if [ ! "$@" ]; then
