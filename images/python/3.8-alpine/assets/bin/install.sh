@@ -6,7 +6,7 @@ set -eu
 deploy-utils.sh update
 
 # Installation
-deploy-utils.sh install "python3=3.8.5-r0 py3-pip"
+deploy-utils.sh install "python3 py3-pip"
 
 # Cleanup procedure
 deploy-utils.sh cleanup
