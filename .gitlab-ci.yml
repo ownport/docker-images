@@ -82,6 +82,15 @@ python_3_8_dev_alpine:
   # only:
   # - tags
 
+python_3_8_dev_vscode_alpine:
+  stage: python_image
+  script:
+    - ./manage.sh build images/python/3.8-dev-vscode-alpine
+    - ./manage.sh test images/python/3.8-dev-vscode-alpine
+    - ./manage.sh publish-to-gitlab-registry images/python/3.8-dev-vscode-alpine
+  # only:
+  # - tags
+
 # dev_images:
 #   stage: dev_image
 #   script:
