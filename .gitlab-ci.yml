@@ -37,6 +37,24 @@ base_alpine_3_13:
   # only:
   # - tags
 
+base_ubuntu_20_04:
+  stage: base_image
+  script:
+    - ./manage.sh build images/base/ubuntu-20.04
+    - ./manage.sh test images/base/ubuntu-20.04
+    - ./manage.sh publish-to-gitlab-registry images/base/ubuntu-20.04
+  # only:
+  # - tags
+
+base_ubuntu_20_10:
+  stage: base_image
+  script:
+    - ./manage.sh build images/base/ubuntu-20.10
+    - ./manage.sh test images/base/ubuntu-20.10
+    - ./manage.sh publish-to-gitlab-registry images/base/ubuntu-20.10
+  # only:
+  # - tags
+
 # dev_images:
 #   stage: dev_image
 #   script:
