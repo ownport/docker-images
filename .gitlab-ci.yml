@@ -16,7 +16,7 @@ before_script:
 
 stages:
   - base_image
-  # - dev_image
+  - python_image
   # - dev_vscode_image
 
 base_alpine_3_12:
@@ -54,6 +54,16 @@ base_ubuntu_20_10:
     - ./manage.sh publish-to-gitlab-registry images/base/ubuntu-20.10
   # only:
   # - tags
+
+python_3_8_alpine:
+  stage: python_image
+  script:
+    - ./manage.sh build images/python/3.8-alpine
+    - ./manage.sh test images/python/3.8-alpine
+    - ./manage.sh publish-to-gitlab-registry images/python/3.8-alpine
+  # only:
+  # - tags
+
 
 # dev_images:
 #   stage: dev_image
