@@ -1,4 +1,4 @@
-FROM ownport/base:3.12-alpine
+FROM ownport/base:3.13-alpine
 
 COPY assets/ /tmp/assets/
 
