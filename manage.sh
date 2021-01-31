@@ -68,7 +68,7 @@ case ${1} in
 
             # Run tests for docker image
             docker run --rm -v "$(pwd)/tests":/tests \
-		            ${GITLAB_DOCKER_IMAGE}:${DOCKER_IMAGE_VERSION} sh # /tests/run-tests.sh
+		            ${GITLAB_DOCKER_IMAGE}:${DOCKER_IMAGE_VERSION} /tests/run-tests.sh && echo 'OK'
         }
         ;;
     remove)
