@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 echo "[INFO] Publishing package"
 python3 setup.py sdist bdist_wheel
