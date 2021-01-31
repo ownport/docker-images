@@ -19,6 +19,9 @@ stages:
   - python_image
   # - dev_vscode_image
 
+# ==================================================================
+# Base images: Alpine
+#
 base_alpine_3_12:
   stage: base_image
   script:
@@ -37,6 +40,9 @@ base_alpine_3_13:
   # only:
   # - tags
 
+# ==================================================================
+# Base images: Ubuntu
+#
 base_ubuntu_20_04:
   stage: base_image
   script:
@@ -55,6 +61,9 @@ base_ubuntu_20_10:
   # only:
   # - tags
 
+# ==================================================================
+# Python 3.8 Alpine
+#
 python_3_8_alpine:
   stage: python_image
   script:
@@ -64,6 +73,14 @@ python_3_8_alpine:
   # only:
   # - tags
 
+python_3_8_dev_alpine:
+  stage: python_image
+  script:
+    - ./manage.sh build images/python/3.8-dev-alpine
+    - ./manage.sh test images/python/3.8-dev-alpine
+    - ./manage.sh publish-to-gitlab-registry images/python/3.8-dev-alpine
+  # only:
+  # - tags
 
 # dev_images:
 #   stage: dev_image
