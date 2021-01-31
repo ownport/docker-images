@@ -15,15 +15,16 @@ before_script:
   - apk add bash
 
 stages:
-  - base_image
-  - python_image
-  # - dev_vscode_image
+  - base
+  - base:python
+  - dev:python
+  - dev:vscode
 
 # ==================================================================
 # Base images: Alpine
 #
 base:alpine-3.12:
-  stage: base_image
+  stage: base
   script:
     - ./manage.sh build images/base/alpine-3.12
     - ./manage.sh test images/base/alpine-3.12
@@ -32,7 +33,7 @@ base:alpine-3.12:
   # - tags
 
 base:alpine-3.13:
-  stage: base_image
+  stage: base
   script:
     - ./manage.sh build images/base/alpine-3.13
     - ./manage.sh test images/base/alpine-3.13
@@ -44,7 +45,7 @@ base:alpine-3.13:
 # Base images: Ubuntu
 #
 base:ubuntu-20.04:
-  stage: base_image
+  stage: base
   script:
     - ./manage.sh build images/base/ubuntu-20.04
     - ./manage.sh test images/base/ubuntu-20.04
@@ -53,7 +54,7 @@ base:ubuntu-20.04:
   # - tags
 
 base:ubuntu-20.10:
-  stage: base_image
+  stage: base
   script:
     - ./manage.sh build images/base/ubuntu-20.10
     - ./manage.sh test images/base/ubuntu-20.10
@@ -65,7 +66,7 @@ base:ubuntu-20.10:
 # Python 3.8 Alpine
 #
 python:3.8-alpine:
-  stage: python_image
+  stage: base:python
   script:
     - ./manage.sh build images/python/3.8-alpine
     - ./manage.sh test images/python/3.8-alpine
@@ -76,7 +77,7 @@ python:3.8-alpine:
   # - tags
 
 python:3.8-dev-alpine:
-  stage: python_image
+  stage: dev:python
   script:
     - ./manage.sh build images/python/3.8-dev-alpine
     - ./manage.sh test images/python/3.8-dev-alpine
@@ -87,7 +88,7 @@ python:3.8-dev-alpine:
   # - tags
 
 python:3.8-dev-vscode-alpine:
-  stage: python_image
+  stage: dev:vscode
   script:
     - ./manage.sh build images/python/3.8-dev-vscode-alpine
     - ./manage.sh test images/python/3.8-dev-vscode-alpine
