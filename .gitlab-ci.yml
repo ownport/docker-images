@@ -22,7 +22,7 @@ stages:
 # ==================================================================
 # Base images: Alpine
 #
-base_alpine_3_12:
+base:alpine-3.12:
   stage: base_image
   script:
     - ./manage.sh build images/base/alpine-3.12
@@ -31,7 +31,7 @@ base_alpine_3_12:
   # only:
   # - tags
 
-base_alpine_3_13:
+base:alpine-3.13:
   stage: base_image
   script:
     - ./manage.sh build images/base/alpine-3.13
@@ -43,7 +43,7 @@ base_alpine_3_13:
 # ==================================================================
 # Base images: Ubuntu
 #
-base_ubuntu_20_04:
+base:ubuntu-20.04:
   stage: base_image
   script:
     - ./manage.sh build images/base/ubuntu-20.04
@@ -52,7 +52,7 @@ base_ubuntu_20_04:
   # only:
   # - tags
 
-base_ubuntu_20_10:
+base:ubuntu-20.10:
   stage: base_image
   script:
     - ./manage.sh build images/base/ubuntu-20.10
@@ -64,36 +64,36 @@ base_ubuntu_20_10:
 # ==================================================================
 # Python 3.8 Alpine
 #
-python_3_8_alpine:
+python:3.8-alpine:
   stage: python_image
   script:
     - ./manage.sh build images/python/3.8-alpine
     - ./manage.sh test images/python/3.8-alpine
     - ./manage.sh publish-to-gitlab-registry images/python/3.8-alpine
-  dependecies:
-    - base_alpine_3_13
+  dependencies:
+    - base:alpine-3.13
   # only:
   # - tags
 
-python_3_8_dev_alpine:
+python:3.8-dev-alpine:
   stage: python_image
   script:
     - ./manage.sh build images/python/3.8-dev-alpine
     - ./manage.sh test images/python/3.8-dev-alpine
     - ./manage.sh publish-to-gitlab-registry images/python/3.8-dev-alpine
-  dependecies:
-    - python_3_8_alpine
+  dependencies:
+    - python:3.8-alpine
   # only:
   # - tags
 
-python_3_8_dev_vscode_alpine:
+python:3.8-dev-vscode-alpine:
   stage: python_image
   script:
     - ./manage.sh build images/python/3.8-dev-vscode-alpine
     - ./manage.sh test images/python/3.8-dev-vscode-alpine
     - ./manage.sh publish-to-gitlab-registry images/python/3.8-dev-vscode-alpine
-  dependecies:
-    - python_3_8_dev_alpine
+  dependencies:
+    - python:3.8-dev-alpine
   # only:
   # - tags
 
