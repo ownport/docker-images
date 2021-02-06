@@ -26,6 +26,9 @@ echo "[TEST] Check pip-tools version" && \
     pip-compile --version && \
     pip-sync --version
 
+echo "[TEST] Check pre-commit version" && \
+    pre-commit --version
+
 echo "[TEST] Check pylint version" && \
     pylint --version
 

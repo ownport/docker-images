@@ -19,6 +19,9 @@ py3-utils.sh install "setuptools_scm[toml]>=3.4"
 # Python Tools
 py3-utils.sh install "pip-tools"
 
+# Git Tools
+py3-utils.sh install "pre-commit"
+
 # Linters
 py3-utils.sh install "pylint"
 
