@@ -25,3 +25,4 @@ Linters
 Testing
 - pytest pytest-cov pytest-xdist 
 - pytest-benchmark pytest-mock
+- coverage[toml]

@@ -9,7 +9,7 @@ deploy-utils.sh update
 deploy-utils.sh install-build-deps "gcc python3-dev musl-dev libffi-dev"
 
 # Installation
-deploy-utils.sh install "git jq zsh make"
+deploy-utils.sh install "git jq make zsh bash"
 deploy-utils.sh install "py3-wheel py3-setuptools"
 
 # Build and deploy
@@ -26,8 +26,10 @@ py3-utils.sh install "pre-commit"
 py3-utils.sh install "pylint"
 
 # Testing
+py3-utils.sh install "coverage[toml]"
 py3-utils.sh install "pytest pytest-cov pytest-xdist pytest-benchmark pytest-mock"
 
+# Update scripts
 if [ -d /tmp/assets/bin/dev/ ] ; then
     echo '[INFO] Update dev scripts'
     mkdir -p /usr/local/bin/dev/

@@ -35,6 +35,9 @@ echo "[TEST] Check pylint version" && \
 echo "[TEST] Check pytest version" && \
     pytest --version
 
+echo "[TEST] Check coverage version" && \
+    coverage --version
+
 echo "[TEST] Check dev scripts" && {
     SCRIPTS="cleanup.sh release.sh run-pytest.sh publish.sh"
     for script in ${SCRIPTS}; do
