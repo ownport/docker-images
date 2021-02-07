@@ -8,12 +8,7 @@ set -e
 #   --trusted-host pypi-server
 #   --extra-index-url http://pypi-server:8080/simple/
 
-pip3 install -e . && \
-    PYTHONDONTWRITEBYTECODE=1 pytest \
-    -p no:cacheprovider \
-    --junitxml=report.xml \
-    --cov-report=term-missing \
-    --cov-config=.coveragerc
+pip3 install -e . && pytest 
 
 /usr/local/bin/dev/cleanup.sh post-cleanup
 
