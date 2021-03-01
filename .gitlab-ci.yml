@@ -19,6 +19,7 @@ stages:
   - base:python
   - dev:python
   - dev:vscode
+  - tools
 
 # ==================================================================
 # Base images: Alpine
@@ -98,20 +99,14 @@ python:3.8-dev-vscode-alpine:
   # only:
   # - tags
 
-# dev_images:
-#   stage: dev_image
-#   script:
-#     - ./manage.sh build dev
-#     - ./manage.sh test dev
-#     - ./manage.sh publish-to-gitlab-registry dev
-#   only:
-#   - tags
-
-# dev_vscode_images:
-#   stage: dev_vscode_image
-#   script:
-#     - ./manage.sh build dev-vscode
-#     - ./manage.sh test dev-vscode
-#     - ./manage.sh publish-to-gitlab-registry dev-vscode
-#   only:
-#   - tags
+# ==================================================================
+# Utils
+#
+transmission:latest-alpine:
+  stage: tools
+  script:
+    - ./manage.sh build images/tools/transmission/latest-alpine
+    - ./manage.sh test images/tools/transmission/latest-alpine
+    - ./manage.sh publish-to-gitlab-registry images/tools/transmission/latest-alpine
+  dependencies:
+    - base:alpine-3.13
