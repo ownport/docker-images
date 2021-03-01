@@ -35,6 +35,3 @@ echo '[INFO] Creating configuration' && \
 
 # Cleanup procedure
 deploy-utils.sh cleanup
-
-echo '[INFO] Run smoke tests' && \
-    echo 'transmission-cli version: ' $(transmission-cli --version) 
