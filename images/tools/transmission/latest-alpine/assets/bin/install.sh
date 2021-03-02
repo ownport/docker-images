@@ -24,7 +24,7 @@ deploy-utils.sh add-user-and-group \
 deploy-utils.sh install "transmission-cli transmission-daemon"
 
 # Create configuration
-echo '[INFO] Creating configuration' && \
+echo '[INFO] Creating transmission configuration' && \
     mkdir -p \
         /etc/transmission \
         /transmission/downloads \
