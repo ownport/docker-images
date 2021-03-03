@@ -22,6 +22,8 @@ deploy-utils.sh add-user-and-group \
 
 # Install required components
 deploy-utils.sh install "transmission-cli transmission-daemon"
+deploy-utils.sh install "ca-certificates" && \
+    update-ca-certificates
 
 # Create configuration
 echo '[INFO] Creating transmission configuration' && \
