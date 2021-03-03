@@ -102,14 +102,14 @@ python:3.8-dev-vscode-alpine:
 # ==================================================================
 # Utils
 #
-transmission:3.0-alpine:
-  stage: tools
-  script:
-    - ./manage.sh build images/tools/transmission/3.0-alpine
-    - ./manage.sh test images/tools/transmission/3.0-alpine
-    - ./manage.sh publish-to-gitlab-registry images/tools/transmission/3.0-alpine
-  dependencies:
-    - base:alpine-3.13
+# transmission:3.0-alpine:
+#   stage: tools
+#   script:
+#     - ./manage.sh build images/tools/transmission/3.0-alpine
+#     - ./manage.sh test images/tools/transmission/3.0-alpine
+#     - ./manage.sh publish-to-gitlab-registry images/tools/transmission/3.0-alpine
+#   dependencies:
+#     - base:alpine-3.13
 
 tracker:3.0-alpine:
   stage: tools
