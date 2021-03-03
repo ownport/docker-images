@@ -6,6 +6,17 @@ transmission-daemon --foreground --config-dir /etc/transmission-daemon
 ```
 
 ## How to run docker image
+
+settings.json
+```json
+{
+    "incomplete-dir": "/transmission/incomplete",
+    "incomplete-dir-enabled": true,
+    "download-dir": "/transmission/downloads",
+    "rpc-enabled": true
+}
+```
+
 ```sh
 mkdir -p etc/ downloads/ incomplete/
 
