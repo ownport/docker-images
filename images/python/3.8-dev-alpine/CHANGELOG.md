@@ -6,7 +6,7 @@ Build dependencies
 - gcc python3-dev musl-dev libffi-dev
 
 Tools
-- git jq zsh make
+- git jq zsh make zip
 - py3-wheel py3-setuptools
 
 Build and deploy tools

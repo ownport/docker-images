@@ -9,7 +9,7 @@ deploy-utils.sh update
 deploy-utils.sh install-build-deps "gcc python3-dev musl-dev libffi-dev"
 
 # Installation
-deploy-utils.sh install "git jq make zsh bash"
+deploy-utils.sh install "git jq make zsh bash zip"
 deploy-utils.sh install "py3-wheel py3-setuptools"
 
 # Build and deploy
