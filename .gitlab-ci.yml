@@ -42,6 +42,15 @@ base:alpine-3.13:
   # only:
   # - tags
 
+base:alpine-3.14:
+  stage: base
+  script:
+    - ./manage.sh build images/base/alpine-3.14
+    - ./manage.sh test images/base/alpine-3.14
+    - ./manage.sh publish-to-gitlab-registry images/base/alpine-3.14
+  # only:
+  # - tags
+
 # ==================================================================
 # Base images: Ubuntu
 #
