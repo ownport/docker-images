@@ -84,10 +84,11 @@ def handle_target_commands(args):
         all_targets = set([t for t in scanner.run()])
         
         changed_targets = all_targets.intersection(changed_paths)
-        if changed_targets:
-            generator = GitLabYAMLGenerator(branch_name=git.branch_name)
-            generator.run(changed_targets)
-        else:
+
+        generator = GitLabYAMLGenerator(branch_name=git.branch_name)
+        generator.run(changed_targets)
+
+        if not changed_targets:
             logger.warning('No changed targets')
 
 

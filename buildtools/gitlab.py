@@ -13,12 +13,18 @@ services:
 - docker:stable-dind
 
 stages:
+- buildtools
 - base
 - python
 
 before_script:
 - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 - apk add python3 git
+
+buildtools:
+  stage: buildtools
+  script:
+  - echo "[WARNING] to be added later"
 '''
 
 DOCKER_TARGET_TEMPLATE = '''
