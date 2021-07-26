@@ -101,7 +101,7 @@ class Git:
         result = ""
         if RE_FEATURE_BRANCH.match(self.branch_name) or RE_BUGFIX_BRANCH.match(self.branch_name):
             result = 'origin/devel'
-        elif RE_DEVEL_BRANCH.match(self.branch_name):
+        elif RE_DEVEL_BRANCH.match(self.branch_name) or RE_MASTER_BRANCH.match(self.branch_name):
             result = "origin/master"
         return result
 
