@@ -97,7 +97,11 @@ class Git:
         for feature branch -> origin/devel
         for devel branch -> origin/master
         '''
+<<<<<<< HEAD
         result = "HEAD"
+=======
+        result = ""
+>>>>>>> a3d54e4b5275f32eb4ef937e2823765c19daaf6d
         if RE_FEATURE_BRANCH.match(self.branch_name):
             result = 'origin/devel'
         elif RE_DEVEL_BRANCH.match(self.branch_name):
