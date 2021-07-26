@@ -1,0 +1,8 @@
+---
+
+alpine:3.14:
+  stage: base
+  script:
+  - python3 -m buildtools docker --build --target-path images/base/alpine-3.14
+  - python3 -m buildtools docker --test --target-path images/base/alpine-3.14
+  # - python3 -m buildtools docker --publish --target-path images/base/alpine-3.14

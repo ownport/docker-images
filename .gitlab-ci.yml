@@ -5,126 +5,41 @@ variables:
   DOCKER_TLS_CERTDIR: "/certs"
   
 services:
-  - docker:stable-dind
+- docker:stable-dind
 
 # include:
 #   - template: Container-Scanning.gitlab-ci.yml
-  
-before_script:
-  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  - apk add bash
 
 stages:
-  - base
-  - base:python
-  - dev:python
-  - dev:vscode
-  - tools
+- prepare
+- changed targets
+- base
 
-# ==================================================================
-# Base images: Alpine
-#
-base:alpine-3.12:
-  stage: base
+before_script:
+- docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+- apk add python3 git
+
+targets list:
+  stage: prepare
   script:
-    - ./manage.sh build images/base/alpine-3.12
-    - ./manage.sh test images/base/alpine-3.12
-    - ./manage.sh publish-to-gitlab-registry images/base/alpine-3.12
-  # only:
-  # - tags
+  - python3 -m buildtools git --set-branch-name origin/$CI_COMMIT_REF_NAME --fetch-target-branch
+  - >
+    python3 -m buildtools target \
+      --branch-name origin/$CI_COMMIT_REF_NAME \
+      --generate-pipeline > changed-targets.yaml
+  - cat changed-targets.yaml
+  artifacts:
+    paths:
+    - changed-targets.yaml
 
-base:alpine-3.13:
-  stage: base
-  script:
-    - ./manage.sh build images/base/alpine-3.13
-    - ./manage.sh test images/base/alpine-3.13
-    - ./manage.sh publish-to-gitlab-registry images/base/alpine-3.13
-  # only:
-  # - tags
+trigger targets builds:
+  stage: changed targets
+  needs:
+  - targets list
+  trigger:
+    include:
+    - artifact: changed-targets.yaml
+      job: targets list
+    strategy: depend
+    
 
-base:alpine-3.14:
-  stage: base
-  script:
-    - ./manage.sh build images/base/alpine-3.14
-    - ./manage.sh test images/base/alpine-3.14
-    - ./manage.sh publish-to-gitlab-registry images/base/alpine-3.14
-  # only:
-  # - tags
-
-# ==================================================================
-# Base images: Ubuntu
-#
-base:ubuntu-20.04:
-  stage: base
-  script:
-    - ./manage.sh build images/base/ubuntu-20.04
-    - ./manage.sh test images/base/ubuntu-20.04
-    - ./manage.sh publish-to-gitlab-registry images/base/ubuntu-20.04
-  # only:
-  # - tags
-
-base:ubuntu-20.10:
-  stage: base
-  script:
-    - ./manage.sh build images/base/ubuntu-20.10
-    - ./manage.sh test images/base/ubuntu-20.10
-    - ./manage.sh publish-to-gitlab-registry images/base/ubuntu-20.10
-  # only:
-  # - tags
-
-# ==================================================================
-# Python 3.8 Alpine
-#
-python:3.8-alpine:
-  stage: base:python
-  script:
-    - ./manage.sh build images/python/3.8-alpine
-    - ./manage.sh test images/python/3.8-alpine
-    - ./manage.sh publish-to-gitlab-registry images/python/3.8-alpine
-  dependencies:
-    - base:alpine-3.13
-  # only:
-  # - tags
-
-python:3.8-dev-alpine:
-  stage: dev:python
-  script:
-    - ./manage.sh build images/python/3.8-dev-alpine
-    - ./manage.sh test images/python/3.8-dev-alpine
-    - ./manage.sh publish-to-gitlab-registry images/python/3.8-dev-alpine
-  dependencies:
-    - python:3.8-alpine
-  # only:
-  # - tags
-
-python:3.8-dev-vscode-alpine:
-  stage: dev:vscode
-  script:
-    - ./manage.sh build images/python/3.8-dev-vscode-alpine
-    - ./manage.sh test images/python/3.8-dev-vscode-alpine
-    - ./manage.sh publish-to-gitlab-registry images/python/3.8-dev-vscode-alpine
-  dependencies:
-    - python:3.8-dev-alpine
-  # only:
-  # - tags
-
-# ==================================================================
-# Utils
-#
-# transmission:3.0-alpine:
-#   stage: tools
-#   script:
-#     - ./manage.sh build images/tools/transmission/3.0-alpine
-#     - ./manage.sh test images/tools/transmission/3.0-alpine
-#     - ./manage.sh publish-to-gitlab-registry images/tools/transmission/3.0-alpine
-#   dependencies:
-#     - base:alpine-3.13
-
-tracker:3.0-alpine:
-  stage: tools
-  script:
-    - ./manage.sh build images/tools/tracker/3.0-alpine
-    - ./manage.sh test images/tools/tracker/3.0-alpine
-    - ./manage.sh publish-to-gitlab-registry images/tools/tracker/3.0-alpine
-  dependencies:
-    - base:alpine-3.13
