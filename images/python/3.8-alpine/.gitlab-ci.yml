@@ -1,0 +1,8 @@
+---
+
+python:3.8-alpine:
+  stage: python
+  script:
+  - echo "./manage.sh build images/python/3.8-alpine"
+  - echo "./manage.sh test images/python/3.8-alpine"
+  - echo "./manage.sh publish-to-gitlab-registry images/python/3.8-alpine"

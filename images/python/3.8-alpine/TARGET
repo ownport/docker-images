@@ -1,0 +1,9 @@
+
+TARGET = {
+    'type': 'docker',
+    'docker_image': {
+        'name': 'python',
+        'version': '3.8-alpine',
+        'shell': 'sh'
+    }
+}

@@ -1,5 +1,8 @@
 # docker-images
 
+[![pipeline status](https://gitlab.com/ownport/docker-images/badges/master/pipeline.svg)](https://gitlab.com/ownport/docker-images/-/commits/master)
+
+
 The collection of docker images. The list of available docker images, [docs/docker-images.md](docs/docker-images.md)
 
 ## How to use
