@@ -23,10 +23,7 @@ targets list:
   stage: prepare
   script:
   - python3 -m buildtools git --set-branch-name origin/$CI_COMMIT_REF_NAME --fetch-target-branch
-  - >
-    python3 -m buildtools target \
-      --branch-name origin/$CI_COMMIT_REF_NAME \
-      --generate-pipeline > changed-targets.yaml
+  - python3 -m buildtools target --branch-name origin/$CI_COMMIT_REF_NAME --generate-pipeline > changed-targets.yaml
   - cat changed-targets.yaml
   artifacts:
     paths:

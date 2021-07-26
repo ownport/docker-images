@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 
 # Regexps for branch names
 RE_FEATURE_BRANCH = re.compile(r"^(?:origin/)?(feature/.+)")
+RE_BUGFIX_BRANCH = re.compile(r"^(?:origin/)?(bugfix/.+)")
 RE_DEVEL_BRANCH = re.compile(r"^(?:origin/)?devel")
 RE_MASTER_BRANCH = re.compile(r"^(?:origin/)?master")
 
@@ -98,7 +99,7 @@ class Git:
         for devel branch -> origin/master
         '''
         result = ""
-        if RE_FEATURE_BRANCH.match(self.branch_name):
+        if RE_FEATURE_BRANCH.match(self.branch_name) or RE_BUGFIX_BRANCH.match(self.branch_name):
             result = 'origin/devel'
         elif RE_DEVEL_BRANCH.match(self.branch_name):
             result = "origin/master"
