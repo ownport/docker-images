@@ -30,6 +30,8 @@ class Git:
         """
         self._gitcmd = "git"
         self._branch = branch
+        logger.info(f'The branch name from CI: {branch}')
+        logger.info(f'The branch name from local Git: {self.git_branch_name}')
 
     @property
     def current_rev_identifier(self):
@@ -50,8 +52,14 @@ class Git:
         ''' returns branch name
         '''
         if not self._branch:
-            self._branch = self._check_output(["rev-parse", "--abbrev-ref", "HEAD"])
+            self._branch = self.git_branch_name
         return self._branch
+
+    @property
+    def git_branch_name(self):
+        ''' returns branch name from git
+        '''
+        return self._check_output(["rev-parse", "--abbrev-ref", "HEAD"])
 
     def changed_files(self, 
             from_commit=None, 
@@ -95,8 +103,9 @@ class Git:
     def get_target_branch(self) -> str:
         ''' returns target branch name based on the name of current branch
 
-        for feature branch -> origin/devel
+        for feature/bugfix branch -> origin/devel
         for devel branch -> origin/master
+        for master branch -> ""
         '''
         result = ""
         if RE_FEATURE_BRANCH.match(self.branch_name) or RE_BUGFIX_BRANCH.match(self.branch_name):
@@ -108,15 +117,23 @@ class Git:
     def fetch_target_branch(self):
         ''' fetch target branch
         '''
-        target_branch_name = self.get_target_branch().split("/")
-        cmd = ["fetch", ] + target_branch_name
+        cmd = ["fetch", ]
+        if not RE_MASTER_BRANCH.match(self.git_branch_name):
+            target_branch_name = self.get_target_branch().split("/")
+            cmd += target_branch_name
         self._check_call(cmd)
 
-    def add(self, *paths):
+    def get_last_tags(self, tags:int=1) -> list:
+        ''' return the list of last tags, sorted by descending tag date
+        '''
+        cmd = ["for-each-ref", "refs/tags", "--sort=-taggerdate", "--format='%(tag)'", f"--count={tags}"]
+        return self._check_output(cmd).replace("'", "").split('\n')
+
+    def add(self, *paths) -> None:
 
         self._check_call(["add"] + list(paths))
 
-    def _check_call(self, args, failure_msg=None):
+    def _check_call(self, args, failure_msg=None) -> None:
 
         cmd = self._create_git_cmdline(args)
         self._log_call(cmd)

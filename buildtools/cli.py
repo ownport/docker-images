@@ -43,6 +43,10 @@ def handle_git_commands(args):
     elif args.fetch_target_branch:
         git.fetch_target_branch()
 
+    elif args.get_last_tags:
+        for tag in git.get_last_tags(tags=args.get_last_tags):
+            print(tag)
+
     elif args.show_changed_files:
         target_branch = git.get_target_branch()
         logger.info(f"The list of changed files from {target_branch} to {git.commit_id}")
@@ -74,11 +78,12 @@ def handle_target_commands(args):
             print(changed_target)
 
     elif args.generate_pipeline:
+        
         git = Git(args.branch_name)
         scanner = TargetScanner()
 
         target_branch = git.get_target_branch()
-        logger.info(f"The list of changed targes from {target_branch} to {git.commit_id}")
+        logger.info(f"The list of changed targes from {git.commit_id} [{git.branch_name}] to {target_branch}")
 
         changed_paths = set([Path(f).parent for f in git.changed_files(from_commit=target_branch)])
         all_targets = set([t for t in scanner.run()])
@@ -133,6 +138,8 @@ def run_cli():
             help='get target branch name')
     git_parser.add_argument('--fetch-target-branch', action='store_true', 
             help='fetch target branch name')
+    git_parser.add_argument('--get-last-tags', type=int, default=1,
+            help='get the list of last tags')
     git_parser.add_argument('--show-changed-files', action='store_true', 
             help='show changed files')
     git_parser.set_defaults(handler=handle_git_commands)
