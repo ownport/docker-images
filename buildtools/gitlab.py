@@ -37,10 +37,10 @@ DOCKER_TARGET_TEMPLATE = '''
 
 class GitLabYAMLGenerator:
 
-    def __init__(self, branch_name: str) -> None:
+    def __init__(self, branch: str) -> None:
         
-        self._branch_name = branch_name
-        self._dev_image = "--dev-image" if RE_DEVEL_BRANCH.match(self._branch_name) else ""
+        self._branch = branch
+        self._dev_image = "--dev-image" if RE_DEVEL_BRANCH.match(self._branch) else ""
 
     def run(self, targets:list) -> None:
         ''' generate GitLab CI pipeline
@@ -54,5 +54,5 @@ class GitLabYAMLGenerator:
                                                 dev_image=self._dev_image,
                                                 target_path=target_path))
 
-            if RE_MASTER_BRANCH.match(self._branch_name) or RE_DEVEL_BRANCH.match(self._branch_name):
+            if RE_MASTER_BRANCH.match(self._branch) or RE_DEVEL_BRANCH.match(self._branch):
                 print(f"  - python3 -m buildtools docker --publish --target-path {target_path} {self._dev_image}")
