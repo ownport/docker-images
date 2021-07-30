@@ -1,5 +1,6 @@
 
 
+from argparse import ArgumentParser
 import sys
 import logging
 import subprocess
@@ -99,3 +100,40 @@ class Docker:
 
         # Push docker image(-s) to GitLab Docker Registry
         self._run_command(["push", self._docker_image_uri])
+
+
+def add_docker_arguments(parser: ArgumentParser) -> ArgumentParser:
+
+    parser.add_argument('--target-path', type=str, required=True,
+                                help='The path to target')
+    parser.add_argument('--build', action='store_true', 
+                                help='build docker image for target')
+    parser.add_argument('--remove', action='store_true', 
+                                help='remove docker image for target')
+    parser.add_argument('--test', action='store_true', 
+                                help='test docker image for target')
+    parser.add_argument('--publish', action='store_true', 
+                                help='publish docker image for target')
+    parser.add_argument('--dev-image', action='store_true', 
+                                help='create dev image for target')
+    parser.set_defaults(handler=handle_cli_commands)
+
+
+def handle_cli_commands(args):
+
+    target_path = args.target_path
+    dev_image = args.dev_image
+
+    docker = Docker(path=target_path, dev_image=dev_image)
+
+    if args.build:
+        docker.build()
+
+    elif args.remove:
+        docker.remove()
+
+    elif args.test:
+        docker.test()
+
+    elif args.publish:
+        docker.publish()

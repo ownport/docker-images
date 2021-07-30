@@ -2,14 +2,15 @@
 #       Copyright 2014 Pants project contributors (see CONTRIBUTORS.md).
 #       Licensed under the Apache License, Version 2.0 (see LICENSE).
 
-import os
 import re
+import json
 import logging
 import subprocess
 
+from argparse import ArgumentParser
+
 from buildtools.fs import pushd
 from buildtools.command import Command
-from buildtools.command import CommandException
 
 
 logger = logging.getLogger(__name__)
@@ -23,15 +24,15 @@ RE_MASTER_BRANCH = re.compile(r"^(?:origin/)?master")
 
 class Git:
 
-    def __init__(self, branch=None):
+    def __init__(self, branch:str=None, tag:str=None) -> None:
         """Creates a git scm proxy that assumes the git repository is in the cwd by default.
 
         branch :   The branch name, it can be specified via CI
         """
         self._gitcmd = "git"
         self._branch = branch
+        self._tag = tag
         logger.info(f'The branch name from CI: {branch}')
-        logger.info(f'The branch name from local Git: {self.git_branch_name}')
 
     @property
     def current_rev_identifier(self):
@@ -56,15 +57,32 @@ class Git:
         return self._branch
 
     @property
+    def tag(self):
+
+        return self._tag
+
+    @property
     def git_branch_name(self):
         ''' returns branch name from git
         '''
         return self._check_output(["rev-parse", "--abbrev-ref", "HEAD"])
 
+    @property
+    def status(self):
+        ''' return current Git status
+        '''
+        return {
+            'gitVersion': self.version,
+            'gitBranchName': self.git_branch_name,
+            'gitTargetBranch': self.get_target_branch(),
+            'gitCommitId': self.commit_id,
+            'ciBranchName': self.branch_name,
+            'ciTagName': self.tag,
+        }
+
     def changed_files(self, 
             from_commit=None, 
-            include_untracked=False,
-            relative_to=None):
+            include_untracked=False):
         
         uncommitted_changes = self._check_output(["diff", "--name-only", "HEAD"])
 
@@ -118,7 +136,7 @@ class Git:
         ''' fetch target branch
         '''
         cmd = ["fetch", ]
-        if not RE_MASTER_BRANCH.match(self.git_branch_name):
+        if not RE_MASTER_BRANCH.match(self.git_branch_name) and not self.tag:
             target_branch_name = self.get_target_branch().split("/")
             cmd += target_branch_name
         self._check_call(cmd)
@@ -156,4 +174,52 @@ class Git:
         logger.debug("Executing: " + " ".join(cmd))
 
 
+def add_git_arguments(parser: ArgumentParser):
+    
+    parser.add_argument('--info', action='store_true', 
+            help='print out general information')
+    parser.add_argument('--branch', type=str, nargs='?', default=None,
+            help='set branch from CI tool')
+    parser.add_argument('--tag', type=str, nargs='?', default=None, 
+            help='set tag from CI tool')
+    parser.add_argument('--get-target-branch', action='store_true', 
+            help='get target branch name')
+    parser.add_argument('--fetch-target-branch', action='store_true', 
+            help='fetch target branch name')
+    parser.add_argument('--get-last-tags', type=int, default=None,
+            help='get the list of last tags')
+    parser.add_argument('--show-changed-files', action='store_true', 
+            help='show changed files')
+    parser.set_defaults(handler=handle_cli_commands)
+
+    return parser
+
+
+def handle_cli_commands(args):
+
+    git = Git(branch=args.branch, tag=args.tag)
+
+    logger.info(git.status)
+    
+    if args.info:
+        print(json.dumps(git.status))
+
+    elif args.get_target_branch:
+        print(git.get_target_branch())
+
+    elif args.fetch_target_branch:
+        git.fetch_target_branch()
+
+    elif args.get_last_tags:
+        for tag in git.get_last_tags(tags=args.get_last_tags):
+            print(tag)
+
+    elif args.show_changed_files:
+        target_branch = git.get_target_branch()
+        logger.info(f"The list of changed files from {target_branch} to {git.commit_id}")
+        for _file in sorted(git.changed_files(from_commit=target_branch)):
+            print(f"{_file}")
+    
+    else:
+        logger.warning('No action required, use --help to get more details')
     
