@@ -119,7 +119,7 @@ def handle_cli_commands(args):
         
         changed_targets = all_targets.intersection(changed_paths)
 
-        generator = GitLabYAMLGenerator(branch=git.branch_name)
+        generator = GitLabYAMLGenerator(branch=git.branch_name, tag=args.tag)
         generator.run(changed_targets)
 
         if not changed_targets:
