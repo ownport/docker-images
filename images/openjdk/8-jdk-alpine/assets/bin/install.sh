@@ -14,6 +14,3 @@ echo "[INFO] Create sym links" && \
 # Cleanup procedure
 deploy-utils.sh cleanup
 
-# Basic smoke tests
-java -version
-javac -version

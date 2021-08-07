@@ -16,6 +16,14 @@ stages:
 - buildtools
 - base
 - python
+- openjdk
+- nodejs
+- scala
+- bigdata
+- data-science
+- workflows
+- scraping
+- tools
 
 before_script:
 - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
