@@ -31,8 +31,8 @@ DOCKER_TARGET_TEMPLATE = '''
 {target_name}:
   stage: {stage}
   script:
-  - python3 -m buildtools docker --build --target-path {target_path} {dev_image}
-  - python3 -m buildtools docker --test --target-path {target_path} {dev_image}
+  - ./builder docker --build --target-path {target_path} {dev_image}
+  - ./builder docker --test --target-path {target_path} {dev_image}
 '''
 
 class GitLabYAMLGenerator:
