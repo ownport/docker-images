@@ -45,9 +45,10 @@ DOCKER_TARGET_TEMPLATE = '''
 
 class GitLabYAMLGenerator:
 
-    def __init__(self, branch: str) -> None:
+    def __init__(self, branch:str=None, tag:str=None) -> None:
         
         self._branch = branch
+        self._tag = tag
         self._dev_image = "--dev-image" if RE_DEVEL_BRANCH.match(self._branch) else ""
 
     def run(self, targets:list) -> None:
@@ -63,4 +64,7 @@ class GitLabYAMLGenerator:
                                                 target_path=target_path))
 
             if RE_MASTER_BRANCH.match(self._branch) or RE_DEVEL_BRANCH.match(self._branch):
-                print(f"  - python3 -m buildtools docker --publish --target-path {target_path} {self._dev_image}")
+                print(f"  - ./builder docker --publish --target-path {target_path} {self._dev_image}")
+
+            elif self._tag:
+                print(f"  - ./builder docker --publish --target-path {target_path}")
