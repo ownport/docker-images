@@ -105,6 +105,11 @@ class Git:
         if not commit_to:
             commit_to = self.commit_id
 
+        # for master branch we are getting a list of changed files from last release
+        if RE_MASTER_BRANCH.match(self._branch):
+            last_tags = self.get_last_tags()
+            commit_from = last_tags[0] if len(last_tags) >= 1 else self.commit_id
+
         # in case of tag name from CI, get changed files between tags
         if self._tag:
             commit_to = self._tag
@@ -134,18 +139,18 @@ class Git:
             files.update(untracked.split())
         return files
 
-    def changes_in(self, diffspec, relative_to=None):
+    # def changes_in(self, diffspec, relative_to=None):
 
-        relative_to = relative_to or self._worktree
-        cmd = ["diff-tree", "--no-commit-id", "--name-only", "-r", diffspec]
-        return self._check_output(cmd).split()
+    #     relative_to = relative_to or self._worktree
+    #     cmd = ["diff-tree", "--no-commit-id", "--name-only", "-r", diffspec]
+    #     return self._check_output(cmd).split()
 
-    def commit(self, message, verify=True):
+    # def commit(self, message, verify=True):
 
-        cmd = ["commit", "--all", "--message=" + message]
-        if not verify:
-            cmd.append("--no-verify")
-        self._check_call(cmd)
+    #     cmd = ["commit", "--all", "--message=" + message]
+    #     if not verify:
+    #         cmd.append("--no-verify")
+    #     self._check_call(cmd)
 
     def get_target_branch(self) -> str:
         ''' returns target branch name based on the name of current branch
@@ -170,12 +175,19 @@ class Git:
             cmd += target_branch_name
         self._check_call(cmd)
 
-    def get_last_tags(self, tags:int=1) -> list:
+    def get_last_tags(self, tags:int=1, prefix:str=None) -> list:
         ''' return the list of last tags, sorted by descending tag date
         '''
         pattern = 'refs/tags'
+
+        # handling tag's prefixes
+        if prefix:
+            pattern += f"/{prefix}"
+
         if self._tag_prefix:
             pattern += f"/{self._tag_prefix}"
+        
+        # prepare git command for run
         cmd = [
                 "for-each-ref", pattern, 
                 "--sort=-taggerdate", 
@@ -184,31 +196,27 @@ class Git:
         ]
         return self._check_output(cmd).replace("'", "").split('\n')
 
-    def add(self, *paths) -> None:
+    # def add(self, *paths) -> None:
+    #     self._check_call(["add"] + list(paths))
 
-        self._check_call(["add"] + list(paths))
+    def _create_git_cmdline(self, args):
+        
+        return [self._gitcmd, ] + args
 
     def _check_call(self, args, failure_msg=None) -> None:
 
         cmd = self._create_git_cmdline(args)
-        self._log_call(cmd)
+        logger.debug(f"Executing: {' '.join(cmd)}")
         result = subprocess.call(cmd)
         Command.check_result(cmd, result, failure_msg)
 
     def _check_output(self, args, failure_msg=None, errors="strict"):
 
         cmd = self._create_git_cmdline(args)
-        self._log_call(cmd)
+        logger.debug(f"Executing: {' '.join(cmd)}")
         process, out = Command.invoke(cmd)
         Command.check_result(cmd, process.returncode, failure_msg)
         return Command.cleanse(out, errors=errors)
-
-    def _create_git_cmdline(self, args):
-        
-        return [self._gitcmd, ] + args
-
-    def _log_call(self, cmd):
-        logger.debug("Executing: " + " ".join(cmd))
 
 
 def add_git_arguments(parser: ArgumentParser):
@@ -257,4 +265,3 @@ def handle_cli_commands(args):
     
     else:
         logger.warning('No action required, use --help to get more details')
-    

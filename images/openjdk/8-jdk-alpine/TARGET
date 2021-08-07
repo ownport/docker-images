@@ -2,7 +2,7 @@ TARGET = {
     'type': 'docker',
     'docker_image': {
         'name': 'openjdk',
-        'version': '8-alpine',
+        'version': '8-jdk-alpine',
         'shell': 'sh'
     }
 }
