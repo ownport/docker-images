@@ -22,9 +22,9 @@ before_script:
 targets list:
   stage: prepare
   script:
-  - python3 -m buildtools git --branch origin/$CI_COMMIT_REF_NAME --tag $CI_COMMIT_TAG --fetch-target-branch
-  - python3 -m buildtools git --branch origin/$CI_COMMIT_REF_NAME --tag $CI_COMMIT_TAG --show-changed-files
-  - python3 -m buildtools target --branch origin/$CI_COMMIT_REF_NAME --tag $CI_COMMIT_TAG --generate-pipeline > changed-targets.yaml
+  - ./builder git --branch origin/$CI_COMMIT_REF_NAME --tag $CI_COMMIT_TAG --fetch-target-branch
+  - ./builder git --branch origin/$CI_COMMIT_REF_NAME --tag $CI_COMMIT_TAG --show-changed-files
+  - ./builder target --branch origin/$CI_COMMIT_REF_NAME --tag $CI_COMMIT_TAG --generate-pipeline > changed-targets.yaml
   - cat changed-targets.yaml
   artifacts:
     paths:

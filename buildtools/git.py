@@ -27,12 +27,26 @@ class Git:
     def __init__(self, branch:str=None, tag:str=None) -> None:
         """Creates a git scm proxy that assumes the git repository is in the cwd by default.
 
-        branch :   The branch name, it can be specified via CI
+        branch:     The branch name, in most cases specified via CI system
+        tag:        The tag name, in most cases specified from CI system
+
+        branch and tag paramaters are specify the current state of Git object
         """
         self._gitcmd = "git"
+        
         self._branch = branch
         self._tag = tag
-        logger.info(f'The branch name from CI: {branch}')
+        
+        # Tag prefix
+        self._tag_prefix = None
+        if tag:
+            self._tag_prefix = tag.split('/')[0] if '/' in tag else None
+        
+        logger.info(json.dumps({
+            'branch': self._branch, 
+            'tag': self._tag, 
+            'tagPrefix': self._tag_prefix
+        }))
 
     @property
     def current_rev_identifier(self):
@@ -81,18 +95,33 @@ class Git:
         }
 
     def changed_files(self, 
-            from_commit=None, 
+            commit_from=None, commit_to=None, 
             include_untracked=False):
-        
+        ''' returns the list of changed files between from_commit and to_commit
+        '''
+        if not commit_from:
+            commit_from = self.get_target_branch()
+
+        if not commit_to:
+            commit_to = self.commit_id
+
+        # in case of tag name from CI, get changed files between tags
+        if self._tag:
+            commit_to = self._tag
+            last_tags = self.get_last_tags(tags=2)
+            if last_tags[0] != self._tag:
+                raise RuntimeError(f'Incorrect tag name, expected: {last_tags[0]}, detected: {self._tag}')
+            commit_from = last_tags[1] if len(last_tags) == 2 else self.commit_id
+
         uncommitted_changes = self._check_output(["diff", "--name-only", "HEAD"])
 
+        logger.info(f"The list of changed files from {commit_from} to {commit_to}")
         files = set(uncommitted_changes.splitlines())
-        if from_commit:
-            # Grab the diff from the merge-base to HEAD using ... syntax.  This ensures we have just
-            # the changes that have occurred on the current branch.
-            committed_cmd = ["diff", "--name-only", from_commit + f"...{self.commit_id}"]
-            committed_changes = self._check_output(committed_cmd)
-            files.update(committed_changes.split())
+        # Grab the diff from the merge-base to HEAD using ... syntax.  This ensures we have just
+        # the changes that have occurred on the current branch.
+        committed_cmd = ["diff", "--name-only", commit_from + f"...{commit_to}"]
+        committed_changes = self._check_output(committed_cmd)
+        files.update(committed_changes.split())
 
         if include_untracked:
             untracked_cmd = [
@@ -144,7 +173,15 @@ class Git:
     def get_last_tags(self, tags:int=1) -> list:
         ''' return the list of last tags, sorted by descending tag date
         '''
-        cmd = ["for-each-ref", "refs/tags", "--sort=-taggerdate", "--format='%(tag)'", f"--count={tags}"]
+        pattern = 'refs/tags'
+        if self._tag_prefix:
+            pattern += f"/{self._tag_prefix}"
+        cmd = [
+                "for-each-ref", pattern, 
+                "--sort=-taggerdate", 
+                "--format='%(tag)'", 
+                f"--count={tags}"
+        ]
         return self._check_output(cmd).replace("'", "").split('\n')
 
     def add(self, *paths) -> None:
@@ -215,9 +252,7 @@ def handle_cli_commands(args):
             print(tag)
 
     elif args.show_changed_files:
-        target_branch = git.get_target_branch()
-        logger.info(f"The list of changed files from {target_branch} to {git.commit_id}")
-        for _file in sorted(git.changed_files(from_commit=target_branch)):
+        for _file in sorted(git.changed_files()):
             print(f"{_file}")
     
     else:

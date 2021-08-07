@@ -104,10 +104,7 @@ def handle_cli_commands(args):
         git = Git(args.branch)
         scanner = TargetScanner()
 
-        target_branch = git.get_target_branch()
-        logger.info(f"The list of changed targets from {git.commit_id} [{git.branch_name}] to {target_branch}")
-
-        targets_from_changed_files = set([Path(f).parent for f in git.changed_files(from_commit=target_branch)])
+        targets_from_changed_files = set([Path(f).parent for f in git.changed_files()])
         all_targets = set([t for t in scanner.run()])
         for changed_target in all_targets.intersection(targets_from_changed_files):
             print(changed_target)
@@ -117,10 +114,7 @@ def handle_cli_commands(args):
         git = Git(branch=args.branch, tag=args.tag)
         scanner = TargetScanner()
 
-        target_branch = git.get_target_branch()
-        logger.info(f"The list of changed targes from {git.commit_id} [{git.branch_name}] to {target_branch}")
-
-        changed_paths = set([Path(f).parent for f in git.changed_files(from_commit=target_branch)])
+        changed_paths = set([Path(f).parent for f in git.changed_files()])
         all_targets = set([t for t in scanner.run()])
         
         changed_targets = all_targets.intersection(changed_paths)
