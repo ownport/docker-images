@@ -26,7 +26,6 @@ class DockerCommandException(Exception):
     pass
 
 # Error codes
-ERROR_PULL_DOCKER_IMAGE=1000
 ERROR_BUILD_DOCKER_IMAGE=1001
 ERROR_TEST_DOCKER_IMAGE=1002
 ERROR_REMOVE_DOCKER_IMAGE=1003
@@ -79,8 +78,7 @@ class Docker:
             docker_command = ['pull', self._docker_image_uri]
             self._run_command(docker_command)
         except DockerCommandException:
-            logger.error(f'Failed to pull docker image, {self._docker_image_uri}')
-            sys.exit(ERROR_PULL_DOCKER_IMAGE)
+            logger.warning(f'Failed to pull docker image, {self._docker_image_uri}')
 
         # Build docker image
         with pushd(self._target.path):
