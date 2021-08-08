@@ -26,7 +26,7 @@ Available options:
                                 - <shell_path>: shell path, default: /bin/sh
     cleanup             - cleanup
 EOM
-        ;;
+    ;;
     update)
         echo "[INFO] Update apk index" && \
             apk update
@@ -46,7 +46,7 @@ EOM
         USER_ID=${1:-}
         USER_NAME=${2:-}
         GROUP_ID=${3:-}
-        GROUP_NAME=${4:-}
+        GROUP_NAME=${4:-}   
         SHELL_PATH=${5:-/bin/sh}
         echo "[INFO] Add user and group, user id/name: ${USER_NAME}/${USER_ID}, group id/name: ${GROUP_ID}/${GROUP_NAME}" && \
             addgroup -g ${GROUP_ID} ${GROUP_NAME} && \
@@ -64,9 +64,9 @@ EOM
             rm -rf \
                 /var/lib/apt/lists/* \
                 /tmp/*
-        
-        echo "[INFO] Removing build deps" && 
-            apk info -q .build-deps > /dev/null && 
+
+        echo "[INFO] Removing build deps" && \
+            apk info -q .build-deps > /dev/null && \
                 apk del .build-deps || \
                 echo "[WARNING] No build dependecies "
         ;;
