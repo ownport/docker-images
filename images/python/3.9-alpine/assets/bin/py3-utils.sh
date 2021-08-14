@@ -20,8 +20,11 @@ case ${OPTION} in
 Usage: py3-utils.sh <option> [arguments]
 Available options:'
     install     - install python package(-s) via pip'
-        argumens:
+        arguments:
             <packages>:     the list of python packages for install
+    uninstall   - uninstall python package(-s) via pip'
+        arguments:
+            <packages>:     the list of python packages for uninstall
     cleanup     - cleanup'
 EOM
         ;;
@@ -29,6 +32,11 @@ EOM
         shift
         echo "[INFO] Installing python packages: $@"
         pip3 install --disable-pip-version-check --no-build-isolation --no-cache-dir $@
+        ;;
+    uninstall)
+        shift
+        echo "[INFO] Uninstalling python packages: $@"
+        pip3 uninstall -y $@
         ;;
     cleanup)
         echo "[INFO] Cleaning up python cache files"
