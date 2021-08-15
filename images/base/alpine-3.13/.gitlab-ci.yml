@@ -1,8 +1,0 @@
----
-
-alpine:3.13:
-  stage: base
-  script:
-  - echo "./manage.sh build images/base/alpine-3.13"
-  - echo "./manage.sh test images/base/alpine-3.13"
-  - echo "./manage.sh publish-to-gitlab-registry images/base/alpine-3.13"
