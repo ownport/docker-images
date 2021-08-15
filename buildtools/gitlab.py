@@ -19,6 +19,7 @@ stages:
 - openjdk
 - nodejs
 - scala
+- rust
 - bigdata
 - data-science
 - workflows
