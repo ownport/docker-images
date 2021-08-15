@@ -2,5 +2,6 @@
 
 ## 3.8-alpine
 
-- base image
+- use Alpine 3.13 base docker image
+
 

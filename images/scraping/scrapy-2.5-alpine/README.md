@@ -2,13 +2,13 @@
 
 ## System Components
 
-- bash
+- zsh
 - jq
 
 ## Python packages
 
-- scrapy:2.2.1
-- PyYAML:5.3.1
+- scrapy:2.5.0
+- PyYAML:5.4.1
 
 ## References
 
