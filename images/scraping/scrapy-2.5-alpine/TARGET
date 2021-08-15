@@ -1,0 +1,10 @@
+
+TARGET = {
+    'type': 'docker',
+    'docker_image': {
+        'name': 'scrapy',
+        'version': '2.5-alpine',
+        'shell': 'zsh'
+    }
+}
+
