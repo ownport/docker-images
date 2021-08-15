@@ -4,6 +4,7 @@ import argparse
 
 from buildtools.git import add_git_arguments
 from buildtools.target import add_target_argumens
+from buildtools.docker_tools import add_docker_tools_arguments
 from buildtools.targets.docker import add_docker_arguments
 
 
@@ -27,6 +28,10 @@ def run_cli():
     # Target commands
     target_parser = subparsers.add_parser('target', help='Target commands')
     target_parser = add_target_argumens(target_parser)
+
+    # Docker Tools commands
+    docker_tools_parser = subparsers.add_parser('docker-tools', help='Docker Tools commads')
+    docker_tools_parser = add_docker_tools_arguments(docker_tools_parser)
 
     # Docker commands
     docker_parser = subparsers.add_parser('docker', help='Docker commads')
