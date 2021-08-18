@@ -1,0 +1,12 @@
+
+TARGET = {
+    'type': 'docker',
+    'docker_image': {
+        'name': 'python',
+        'version': '3.9-dev-alpine',
+        'shell': 'zsh'
+    },
+    'dependecies': [
+        'images/base/3.14-alpine'
+    ]
+}
