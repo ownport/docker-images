@@ -17,8 +17,9 @@ stages:
 - base
 - python
 - openjdk
-- nodejs
+- sbt
 - scala
+- nodejs
 - rust
 - bigdata
 - data-science
