@@ -1,4 +1,4 @@
-FROM ownport/openjdk:8-alpine
+FROM registry.gitlab.com/ownport/docker-images/openjdk:11-jdk-alpine
 
 COPY assets/ /tmp/assets/
 

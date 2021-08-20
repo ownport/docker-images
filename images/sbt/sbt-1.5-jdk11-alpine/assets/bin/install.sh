@@ -2,8 +2,8 @@
 
 set -eu
 
-SBT_VERSION=1.3.13
-SBT_DOWNLOAD_URL=https://piccolo.link/sbt-${SBT_VERSION}.tgz
+SBT_VERSION=1.5.5
+SBT_DOWNLOAD_URL="https://github.com/sbt/sbt/releases/download/v${SBT_VERSION}/sbt-${SBT_VERSION}.tgz"
 
 
 # Preparation
@@ -21,8 +21,3 @@ echo "[INFO] Installing sbt-${SBT_VERSION}" && \
 
 # Cleanup procedure
 deploy-utils.sh cleanup
-
-echo "[INFO] Basic smoke tests" && \
-    java -version && \
-    javac -version && \
-    sbt --version
