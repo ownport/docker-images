@@ -2,6 +2,15 @@
 
 set -eu
 
+# removing extra files
+cleanup() {
+
+    echo "[INFO] Cleaning extra files" && \
+        rm -rf \
+            /usr/share/X11 \
+            /usr/share/fonts \
+            /usr/share/fontconfig
+}
 
 # Preparation
 deploy-utils.sh update
@@ -27,8 +36,5 @@ do
 done
 
 # Cleanup procedure
+cleanup
 deploy-utils.sh cleanup
-
-
-
-
