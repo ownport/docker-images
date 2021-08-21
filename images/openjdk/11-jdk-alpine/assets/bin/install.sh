@@ -2,6 +2,18 @@
 
 set -eu
 
+# removing extra files
+cleanup() {
+
+    echo "[INFO] Cleaning extra files" && \
+        rm -rf \
+            /usr/share/X11 \
+            /usr/lib/jvm/java-11-openjdk/man \
+            /usr/lib/jvm/java-11-openjdk/demo \
+            /usr/lib/jvm/java-11-openjdk/jmods/java.desktop.* \
+            /usr/lib/jvm/java-11-openjdk/jmods/jdk.unsupported.desktop.jmod
+}
+
 
 # Preparation
 deploy-utils.sh update
@@ -27,6 +39,7 @@ do
 done
 
 # Cleanup procedure
+cleanup
 deploy-utils.sh cleanup
 
 

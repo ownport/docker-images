@@ -63,6 +63,7 @@ EOM
         echo "[INFO] Remove apt index" && \
             rm -rf \
                 /var/lib/apt/lists/* \
+                /var/cache/* \
                 /tmp/*
 
         echo "[INFO] Removing build deps" && \
