@@ -1,0 +1,9 @@
+
+TARGET = {
+    'type': 'docker',
+    'docker_image': {
+        'name': 'nodejs',
+        'version': '12.18-alpine',
+        'shell': 'sh'
+    }
+}
