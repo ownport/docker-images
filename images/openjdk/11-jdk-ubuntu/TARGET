@@ -1,0 +1,11 @@
+TARGET = {
+    'type': 'docker',
+    'docker_image': {
+        'name': 'openjdk',
+        'version': '11-jdk-ubuntu',
+        'shell': 'bash'
+    },
+    'dependencies': [
+        'images/base/21.04-ubuntu'
+    ]
+}
