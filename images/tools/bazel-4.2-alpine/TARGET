@@ -1,0 +1,11 @@
+TARGET = {
+    'type': 'docker',
+    'docker_image': {
+        'name': 'bazel',
+        'version': '4.2-alpine',
+        'shell': 'sh'
+    },
+    'dependencies': [
+        'images/base/3.14-alpine'
+    ]
+}
