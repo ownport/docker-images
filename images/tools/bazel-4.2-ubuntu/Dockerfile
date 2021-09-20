@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/ownport/docker-images/base:3.14-alpine
+FROM registry.gitlab.com/ownport/docker-images/base:21.04-ubuntu
 
 COPY assets/ /tmp/assets/
 

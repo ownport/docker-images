@@ -6,7 +6,9 @@ set -eu
 deploy-utils.sh update
 
 # Installation
-deploy-utils.sh install "bazel4"
+deploy-utils.sh install-build-deps "g++ unzip zip"
+
+
 
 # Cleanup procedure
 deploy-utils.sh cleanup
