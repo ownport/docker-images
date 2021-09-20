@@ -36,6 +36,11 @@ EOM
         echo "[INFO] Installing the packages: $@" && \
             apk add --no-cache $@
         ;;
+    install-edge-pkgs)
+        shift
+        echo "[INFO] Installing the packages: $@ from edge repo" && \
+            apk add --no-cache $@ --repository=http://dl-cdn.alpinelinux.org/alpine/edge/main
+        ;;
     install-build-deps)
         shift
         echo "[INFO] Installing the packages: $@" && \
