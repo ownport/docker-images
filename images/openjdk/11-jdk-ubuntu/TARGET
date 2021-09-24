@@ -6,6 +6,6 @@ TARGET = {
         'shell': 'bash'
     },
     'dependencies': [
-        'images/base/21.04-ubuntu'
+        'images/base/20.10-ubuntu'
     ]
 }
