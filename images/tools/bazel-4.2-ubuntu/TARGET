@@ -2,10 +2,10 @@ TARGET = {
     'type': 'docker',
     'docker_image': {
         'name': 'bazel',
-        'version': '4.2-alpine',
+        'version': '4.2-ubuntu',
         'shell': 'sh'
     },
     'dependencies': [
-        'images/base/3.14-alpine'
+        'images/openjdk/11-jdk-ubuntu'
     ]
 }
