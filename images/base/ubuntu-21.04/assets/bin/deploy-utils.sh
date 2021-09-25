@@ -59,7 +59,8 @@ case ${1} in
             rm -rf \
                 /var/cache/* \
                 /var/lib/apt/lists/* \
-                /tmp/*
+                /tmp/* \
+                /usr/share/doc/*
         ;;
     *)
         if [ ! "$@" ]; then
