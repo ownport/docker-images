@@ -7,11 +7,11 @@ cleanup() {
 
     echo "[INFO] Cleaning extra files" && \
         rm -rf \
-            /usr/share/X11 #\
-            # /usr/lib/jvm/java-11-openjdk-amd64/man \
-            # /usr/lib/jvm/java-11-openjdk-amd64/demo \
-            # /usr/lib/jvm/java-11-openjdk-amd64/jmods/java.desktop.* \
-            # /usr/lib/jvm/java-11-openjdk-amd64/jmods/jdk.unsupported.desktop.jmod
+            /usr/share/X11 \
+            /usr/share/fonts \
+            /usr/lib/jvm/java-11-openjdk-amd64/man \
+            /usr/lib/jvm/java-11-openjdk-amd64/docs \
+            /usr/lib/jvm/java-8-openjdk-amd64/jre/man 
 }
 
 # Preparation
