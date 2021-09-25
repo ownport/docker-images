@@ -15,7 +15,7 @@ echo "deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8" |
 deploy-utils.sh update
 
 # Installation
-deploy-utils.sh install "bazel"
+deploy-utils.sh install "bazel=4.2.1"
 
 # Cleanup procedure
 deploy-utils.sh cleanup
