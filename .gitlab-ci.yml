@@ -5,8 +5,8 @@ default:
 variables:
   DOCKER_TLS_CERTDIR: "/certs"
   
-services:
-- docker:stable-dind
+# services:
+# - docker:stable-dind
 
 # include:
 #   - template: Container-Scanning.gitlab-ci.yml
