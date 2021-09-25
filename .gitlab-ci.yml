@@ -11,7 +11,7 @@ before_script:
 build:
   stage: build
   script:
-    bazel --output_base output build //
+    bazel --output_base output build //images
   artifacts:
     paths:
       - bazel-bin/
