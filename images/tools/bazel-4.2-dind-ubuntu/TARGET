@@ -1,0 +1,11 @@
+TARGET = {
+    'type': 'docker',
+    'docker_image': {
+        'name': 'bazel',
+        'version': '4.2-dind-ubuntu',
+        'shell': 'bash'
+    },
+    'dependencies': [
+        'images/tools/bazel-4.2-ubuntu'
+    ]
+}
