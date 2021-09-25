@@ -16,7 +16,7 @@ build:
     paths:
       - bazel-bin/
   cache:
-    key: $BAZEL_DIGEST_VERSION
+    key: cc195b00504e0a277a45468edc8a9673d
     paths:
       - output        
 
