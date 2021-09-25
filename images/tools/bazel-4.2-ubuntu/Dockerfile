@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/ownport/docker-images/openjdk:11-jdk-ubuntu
+FROM registry.gitlab.com/ownport/docker-images/openjdk:8-jdk-ubuntu
 
 COPY assets/ /tmp/assets/
 
