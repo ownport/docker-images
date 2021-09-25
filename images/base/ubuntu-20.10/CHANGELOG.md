@@ -1,3 +1,3 @@
 # CHANGELOG
 
-- cleanup /var/cache/ directory
+- cleanup /var/cache/ directory, with fix
