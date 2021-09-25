@@ -18,9 +18,7 @@ echo "[INFO] Install docker tools" && \
     rm /tmp/docker.tgz
 
 echo "[INFO] Install dind tool" && \
-    curl https://raw.githubusercontent.com/moby/moby/20.10/hack/dind \
-        -o /usr/local/bin/dind && \
-    chmod +x /usr/local/bin/dind
+    mv /tmp/assets/bin/dind /usr/local/bin/
 
 # Cleanup procedure
 deploy-utils.sh cleanup
