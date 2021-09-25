@@ -57,9 +57,10 @@ case ${1} in
         
         echo "[INFO] Removing apt index" && \
             rm -rf \
-                /var/cache/*
+                /var/cache/* \
                 /var/lib/apt/lists/* \
-                /tmp/*
+                /tmp/* \
+                /usr/share/doc/*
         ;;
     *)
         if [ ! "$@" ]; then

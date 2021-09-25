@@ -1,11 +1,12 @@
 default:
-  image: docker:stable
+  # image: docker:stable
+  image: registry.gitlab.com/ownport/docker-images/bazel:4.2-dind-ubuntu
 
 variables:
   DOCKER_TLS_CERTDIR: "/certs"
   
-services:
-- docker:stable-dind
+# services:
+# - docker:stable-dind
 
 # include:
 #   - template: Container-Scanning.gitlab-ci.yml
@@ -17,7 +18,8 @@ stages:
 
 before_script:
 - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-- apk add python3 git
+- deploy-utils.sh update
+- deploy-utils.sh install python3 git
 
 targets list:
   stage: prepare
