@@ -9,7 +9,7 @@ DOCKER_VERSION="20.10.8"
 deploy-utils.sh update
 
 # Install required packages for builder
-deploy-utils.sh install "python3 git"
+deploy-utils.sh install "python3 git ca-certificates"
 
 deploy-utils.sh install-build-deps "wget tar"
 echo "[INFO] Install docker tools" && \
