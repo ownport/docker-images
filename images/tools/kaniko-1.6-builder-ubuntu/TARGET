@@ -1,0 +1,11 @@
+TARGET = {
+    'type': 'docker',
+    'docker_image': {
+        'name': 'kaniko',
+        'version': '1.6-builder-ubuntu',
+        'shell': 'bash'
+    },
+    'dependencies': [
+        'images/base/kaniko:1.6-ubuntu'
+    ]
+}
