@@ -1,6 +1,6 @@
 default:
   # image: docker:stable
-  image: registry.gitlab.com/ownport/docker-images/bazel:4.2-dind-ubuntu
+  image: registry.gitlab.com/ownport/docker-images/kaniko:1.6-builder-ubuntu
 
 variables:
   DOCKER_TLS_CERTDIR: "/certs"
@@ -18,8 +18,6 @@ stages:
 
 before_script:
 - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-- deploy-utils.sh update
-- deploy-utils.sh install python3 git
 
 targets list:
   stage: prepare
