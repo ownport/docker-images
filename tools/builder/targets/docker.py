@@ -6,8 +6,8 @@ import subprocess
 
 from pathlib import Path
 
-from buildtools.fs import pushd
-from buildtools.target import Target
+from builder.fs import pushd
+from builder.target import Target
 
 from argparse import ArgumentParser
 

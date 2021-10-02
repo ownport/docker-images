@@ -6,7 +6,7 @@ import logging
 import subprocess
 
 
-from buildtools.command import Command
+from builder.command import Command
 
 from argparse import ArgumentParser
 

@@ -9,8 +9,8 @@ import subprocess
 
 from argparse import ArgumentParser
 
-from buildtools.fs import pushd
-from buildtools.command import Command
+from builder.fs import pushd
+from builder.command import Command
 
 
 logger = logging.getLogger(__name__)
