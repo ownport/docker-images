@@ -1,0 +1,8 @@
+---
+type: docker_image
+name: python
+version': 3.8-dev-alpine
+parameters:
+  shell: zsh
+depends:
+- images/python/3.8-alpine

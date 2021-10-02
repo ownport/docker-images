@@ -1,0 +1,9 @@
+---
+type: docker_image
+name: python
+version: 3.8-ubuntu
+parameters:
+  shell: bash
+depends:
+- images/base/20.04-ubuntu
+
