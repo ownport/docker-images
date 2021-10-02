@@ -41,14 +41,14 @@ class Docker:
         self._target = Target(path)
         
         target_type = self._target.info.get("type")
-        if not target_type:
-            raise ValueError(f'Target type shall be docker, founded: {target_type}')
+        if not target_type and target_type != 'docker_image':
+            raise ValueError(f'Target type shall be "docker_image", founded: {target_type}')
 
-        self._docker_image = self._target.info.get("docker_image", {}).get("name")
+        self._docker_image = self._target.info.get("name")
         if not self._docker_image:
             raise ValueError(f'No docker name')
 
-        self._docker_version = self._target.info.get("docker_image", {}).get("version")
+        self._docker_version = self._target.info.get("version")
         if not self._docker_version:
             logger.warning('No docker version, using `latest`')
             self._docker_version = 'latest'

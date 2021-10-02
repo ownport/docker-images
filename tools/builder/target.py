@@ -11,11 +11,14 @@ from importlib.machinery import SourceFileLoader
 from builder.git import Git
 from builder.gitlab import GitLabYAMLGenerator
 
-from builder.libs.yaml import load, dump
-try:
-    from builder.libs.yaml import CLoader as Loader, CDumper as Dumper
-except ImportError:
-    from builder.libs.yaml import Loader, Dumper
+from builder.libs.yaml import safe_load as yaml_load
+from builder.libs.yaml import safe_dump as yaml_dump
+# try:
+#     from builder.libs.yaml import CLoader as YAMLLoader
+#     from builder.libs.yaml import CDumper as YAMLDumper
+# except ImportError:
+#     from builder.libs.yaml import Loader as YAMLLoader
+#     from builder.libs.yaml import Dumper as YAMLDumper
 
 
 logger = logging.getLogger(__name__)
@@ -49,11 +52,11 @@ class Target(TargetBase):
 
     def __init__(self, path: str) -> None:
         super().__init__(path=path)
-        self._target_path = self._path.joinpath('TARGET')
+        self._target_path = self._path.joinpath('TARGET.yml')
         logger.info(f'Target path: {self._target_path}')
 
-        target_module = SourceFileLoader('TARGET', str(self._target_path.absolute())).load_module()
-        self._metadata = target_module.TARGET
+        with open(self._target_path, 'r') as target_file:
+            self._metadata = yaml_load(target_file)
 
     @property
     def info(self):
@@ -67,7 +70,7 @@ class TargetScanner(TargetBase):
     def run(self):
         ''' run scanning of targets in path
         '''
-        for target_file in self._path.glob("**/TARGET"):
+        for target_file in self._path.glob("**/TARGET.yml"):
             target_path = target_file.relative_to(self._path).parent 
             yield target_path
 
