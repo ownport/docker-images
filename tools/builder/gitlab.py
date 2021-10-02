@@ -1,5 +1,5 @@
 
-from buildtools.git import RE_DEVEL_BRANCH, RE_MASTER_BRANCH
+from builder.git import RE_DEVEL_BRANCH, RE_MASTER_BRANCH
 
 DOCKER_TEMPLATE_PIPELINE = '''
 ---

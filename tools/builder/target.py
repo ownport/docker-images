@@ -8,8 +8,8 @@ from argparse import ArgumentParser
 
 from importlib.machinery import SourceFileLoader
 
-from buildtools.git import Git
-from buildtools.gitlab import GitLabYAMLGenerator
+from builder.git import Git
+from builder.gitlab import GitLabYAMLGenerator
 
 
 logger = logging.getLogger(__name__)
