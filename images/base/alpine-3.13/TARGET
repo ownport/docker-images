@@ -1,9 +1,0 @@
-
-TARGET = {
-    'type': 'docker',
-    'docker_image': {
-        'name': 'base',
-        'version': '3.13-alpine',
-        'shell': 'sh'
-    }
-}

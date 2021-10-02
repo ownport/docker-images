@@ -1,0 +1,6 @@
+---
+type: docker_image
+name: base
+version: 3.12-alpine
+parameters:
+  shell: sh
