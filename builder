@@ -1,3 +1,3 @@
 #!/bin/sh
 
-python3 -m buildtools $@
+PYTHONPATH=$(dirname $0)/tools/ python3 -m build $@
