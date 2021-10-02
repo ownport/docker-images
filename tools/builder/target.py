@@ -11,6 +11,12 @@ from importlib.machinery import SourceFileLoader
 from builder.git import Git
 from builder.gitlab import GitLabYAMLGenerator
 
+from builder.libs.yaml import load, dump
+try:
+    from builder.libs.yaml import CLoader as Loader, CDumper as Dumper
+except ImportError:
+    from builder.libs.yaml import Loader, Dumper
+
 
 logger = logging.getLogger(__name__)
 
