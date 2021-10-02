@@ -1,0 +1,6 @@
+---
+type: docker_image
+name: base
+version: 20.10-ubuntu
+parameters:
+  shell: bash

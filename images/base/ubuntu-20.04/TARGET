@@ -1,9 +1,0 @@
-
-TARGET = {
-    'type': 'docker',
-    'docker_image': {
-        'name': 'base',
-        'version': '20.04-ubuntu',
-        'shell': 'bash'
-    }
-}

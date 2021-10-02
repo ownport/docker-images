@@ -1,0 +1,6 @@
+---
+type: docker_image
+name: base
+version: 21.04-ubuntu
+parameters:
+  shell: bash
