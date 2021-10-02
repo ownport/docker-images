@@ -1,4 +1,4 @@
-FROM ownport/base:20.04-ubuntu
+FROM registry.gitlab.com/ownport/docker-images/base:20.04-ubuntu
 
 COPY assets/ /tmp/assets/
 
