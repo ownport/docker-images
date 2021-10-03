@@ -216,12 +216,14 @@ def handle_cli_commands(args):
     elif args.generate_pipeline:
         
         git = Git(branch=args.branch, tag=args.tag)
-        scanner = TargetScanner()
+        deps = TargetDeps()
 
-        changed_targets = set([Path(f).parent for f in git.changed_files()])
-        all_targets = set([t for t in scanner.run()])
-        
-        changed_targets = all_targets.intersection(changed_targets)
+        changed_targets = set([
+            Target.root_path(Path(f))
+                for f in git.changed_files()
+        ])
+        changed_targets = sorted(map(str, filter(None, changed_targets)))
+        changed_targets = changed_targets + list(flatten([deps.children(target) for target in changed_targets]))
 
         generator = GitLabYAMLGenerator(branch=git.branch_name, tag=args.tag)
         generator.run(changed_targets)
