@@ -1,6 +1,15 @@
 
 from builder.git import RE_DEVEL_BRANCH, RE_MASTER_BRANCH
 
+GITLAB_STAGES = [ 
+  'buildtools', 
+  'base', 
+  'python', 'python-dev', 'python-dev-vscode',
+  'openjdk', 'sbt', 'scala', 
+  'nodejs', 'rust', 'bigdata', 'data-science',
+  'workflows', 'scraping', 'tools'
+]
+
 DOCKER_TEMPLATE_PIPELINE = '''
 ---
 default:
@@ -13,19 +22,7 @@ services:
 - docker:stable-dind
 
 stages:
-- buildtools
-- base
-- python
-- openjdk
-- sbt
-- scala
-- nodejs
-- rust
-- bigdata
-- data-science
-- workflows
-- scraping
-- tools
+- {STAGES}
 
 before_script:
 - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
@@ -56,7 +53,7 @@ class GitLabYAMLGenerator:
     def run(self, targets:list) -> None:
         ''' generate GitLab CI pipeline
         '''
-        print(DOCKER_TEMPLATE_PIPELINE)
+        print(DOCKER_TEMPLATE_PIPELINE.format(STAGES='\n- '.join(GITLAB_STAGES)))
         for target_path in targets:
             stage, target_name = str(target_path).split("/")[-2:]
             target_name = ':'.join([stage, target_name])
