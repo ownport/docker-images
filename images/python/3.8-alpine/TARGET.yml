@@ -5,4 +5,4 @@ version: 3.8-alpine
 parameters:
   shell: sh
 depends:
-- images/base/alpine-3.13
+- images/base/3.13-alpine

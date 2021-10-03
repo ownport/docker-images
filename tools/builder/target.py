@@ -6,19 +6,21 @@ import logging
 from pathlib import Path
 from argparse import ArgumentParser
 
-from importlib.machinery import SourceFileLoader
+from collections import defaultdict
+
+from itertools import chain
+flatten = chain.from_iterable
+
+try:
+    from collections.abc import Mapping
+except ImportError:
+    from collections import Mapping
+
 
 from builder.git import Git
 from builder.gitlab import GitLabYAMLGenerator
 
 from builder.libs.yaml import safe_load as yaml_load
-from builder.libs.yaml import safe_dump as yaml_dump
-# try:
-#     from builder.libs.yaml import CLoader as YAMLLoader
-#     from builder.libs.yaml import CDumper as YAMLDumper
-# except ImportError:
-#     from builder.libs.yaml import Loader as YAMLLoader
-#     from builder.libs.yaml import Dumper as YAMLDumper
 
 
 logger = logging.getLogger(__name__)
@@ -30,6 +32,11 @@ def conv_target_to_env(target:str) -> str:
     trans_table = str.maketrans(dict.fromkeys(string.punctuation, "_"))
     target = target.translate(trans_table)
     return '='.join([target, 'YES'])
+
+def print_json(o:object) -> None:
+    ''' print object as json string
+    '''
+    print(json.dumps(o))
 
 
 class TargetBase:
@@ -53,7 +60,7 @@ class Target(TargetBase):
     def __init__(self, path: str) -> None:
         super().__init__(path=path)
         self._target_path = self._path.joinpath('TARGET.yml')
-        logger.info(f'Target path: {self._target_path}')
+        # logger.info(f'Target path: {self._target_path}')
 
         with open(self._target_path, 'r') as target_file:
             self._metadata = yaml_load(target_file)
@@ -64,6 +71,17 @@ class Target(TargetBase):
         '''
         return self._metadata
 
+    @staticmethod
+    def root_path(filepath:Path) -> Path:
+        ''' return a roor path to target by file path
+        '''        
+        path = filepath.parent
+        if str(path) == '.':
+            return None
+
+        if not path.joinpath('TARGET.yml').exists():
+            path = Target.root_path(path)
+        return path
 
 class TargetScanner(TargetBase):
 
@@ -80,8 +98,69 @@ class TargetScanner(TargetBase):
         #     print(f"- {target_path}")
 
 
-def add_target_argumens(parser: ArgumentParser) -> ArgumentParser:
+class TargetDeps(Mapping):
+    ''' Representation of Target dependencies as directed acyclic graph
+    using a dict (Mapping) as the underlying datastructure.
+    '''
+    def __init__(self) -> None:
 
+        scanner = TargetScanner()
+        self._deps = { 
+            str(target_path): Target(target_path).info.get('depends', [])
+                for target_path in sorted(scanner.run()) 
+        }
+
+    def __getitem__(self, *args):
+        return self._deps.get(*args)
+
+    def __iter__(self):
+        return self._deps.__iter__()
+
+    def __len__(self):
+        return len(self._deps)
+    
+    def reverse(self) -> dict:
+        ''' return a reversed dependency structure
+        where a key is target and a value is a list of child targets 
+        '''
+        targets = defaultdict(list)
+        for target, deps in self._deps.items():
+            if len(deps) == 0:
+                continue
+            for parent in deps:
+                targets[parent].append(target)
+
+        # remove duplicatest in target's children
+        for target, children in targets.items():
+            targets[target] = list(set(children))
+        
+        return targets
+
+    def parents(self, target:str) -> list:
+        ''' return a list of target's parents
+        '''
+        parents = list()
+        while True:
+            for parent in self._deps.get(target, []):
+                parents.append(parent)
+                parents.extend(self.parents(parent))
+            break
+        return sorted(set(parents))
+
+    def children(self, target:str) -> list:
+        ''' return a list of target's children
+        '''
+        children = list()
+        _deps = self.reverse()
+        for child in _deps.get(target, []):
+            children.append(child)
+            children.extend(self.children(child))
+        return sorted(set(children))
+        
+
+def add_target_argumens(parser: ArgumentParser) -> ArgumentParser:
+    ''' add target CLI argeuments
+    '''
     parser.add_argument('--branch', type=str, nargs='?', default=None,
                                 help='specify branch from CI tool')
     parser.add_argument('--tag', type=str, nargs='?', default=None,
@@ -92,44 +171,84 @@ def add_target_argumens(parser: ArgumentParser) -> ArgumentParser:
                                 help='show changed targets')
     parser.add_argument('--generate-pipeline', action='store_true', 
                                 help='generate Gitlab CI pipeline for changed targets')
-    parser.add_argument('--target-info',  help='show targets')
+
+    parser.add_argument('--info',  help='show targets')
+    parser.add_argument('--deps', action='store_true', 
+                                help='Show target dependencies, child -> parent')
+    parser.add_argument('--reversed-deps', action='store_true', 
+                                help='Show target dependencies in reversed form, parent -> child')
+    parser.add_argument('--parents', type=str, 
+                                help='show target parent(-s)')
+    parser.add_argument('--children', type=str, 
+                                help='show target children')
     parser.set_defaults(handler=handle_cli_commands)
 
     return parser
 
 
 def handle_cli_commands(args):
-
+    ''' handle CLI commands
+    '''
     if args.show_targets:
         scanner = TargetScanner()
         for target_path in sorted(scanner.run()):
             print(f"- {target_path}")
     
-    elif args.target_info:
-        target = Target(args.target_info)
+    elif args.info:
+
+        target = Target(args.info)
         print(json.dumps(target.info))
 
     elif args.show_changed_targets:
-        git = Git(args.branch)
-        scanner = TargetScanner()
 
-        targets_from_changed_files = set([Path(f).parent for f in git.changed_files()])
-        all_targets = set([t for t in scanner.run()])
-        for changed_target in all_targets.intersection(targets_from_changed_files):
-            print(changed_target)
+        git = Git(args.branch)
+        deps = TargetDeps()
+
+        changed_targets = set([
+            Target.root_path(Path(f))
+                for f in git.changed_files()
+        ])
+        changed_targets = sorted(map(str, filter(None, changed_targets)))
+        changed_targets = changed_targets + list(flatten([deps.children(target) for target in changed_targets]))
+
+        print_json(sorted(set(changed_targets)))
 
     elif args.generate_pipeline:
         
         git = Git(branch=args.branch, tag=args.tag)
-        scanner = TargetScanner()
+        deps = TargetDeps()
 
-        changed_paths = set([Path(f).parent for f in git.changed_files()])
-        all_targets = set([t for t in scanner.run()])
-        
-        changed_targets = all_targets.intersection(changed_paths)
+        changed_targets = set([
+            Target.root_path(Path(f))
+                for f in git.changed_files()
+        ])
+        changed_targets = sorted(map(str, filter(None, changed_targets)))
+        changed_targets = changed_targets + list(flatten([deps.children(target) for target in changed_targets]))
 
         generator = GitLabYAMLGenerator(branch=git.branch_name, tag=args.tag)
         generator.run(changed_targets)
 
         if not changed_targets:
             logger.warning('No changed targets')
+
+    elif args.parents:
+
+        _target = args.parents
+        print_json(TargetDeps().parents(_target))
+
+    elif args.children:
+
+        _target = args.children
+        print_json(TargetDeps().children(_target))
+
+    elif args.deps:
+
+        print_json(TargetDeps().items())
+
+    elif args.reversed_deps:
+
+        scanner = TargetScanner()
+        targets = { str(target_path): Target(target_path).info.get('depends', [])
+                        for target_path in sorted(scanner.run()) }
+
+        print_json(TargetDeps(targets).reverse())
