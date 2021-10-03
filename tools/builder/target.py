@@ -5,20 +5,18 @@ import logging
 
 from pathlib import Path
 from argparse import ArgumentParser
+from collections import defaultdict
 
-from importlib.machinery import SourceFileLoader
+try:
+    from collections.abc import Mapping
+except ImportError:
+    from collections import Mapping
+
 
 from builder.git import Git
 from builder.gitlab import GitLabYAMLGenerator
 
 from builder.libs.yaml import safe_load as yaml_load
-from builder.libs.yaml import safe_dump as yaml_dump
-# try:
-#     from builder.libs.yaml import CLoader as YAMLLoader
-#     from builder.libs.yaml import CDumper as YAMLDumper
-# except ImportError:
-#     from builder.libs.yaml import Loader as YAMLLoader
-#     from builder.libs.yaml import Dumper as YAMLDumper
 
 
 logger = logging.getLogger(__name__)
@@ -80,8 +78,62 @@ class TargetScanner(TargetBase):
         #     print(f"- {target_path}")
 
 
-def add_target_argumens(parser: ArgumentParser) -> ArgumentParser:
+class TargetDeps(Mapping):
+    ''' Representation of Target dependencies as directed acyclic graph
+    using a dict (Mapping) as the underlying datastructure.
+    '''
+    def __init__(self, deps:dict = {}) -> None:
+        self._deps = deps
 
+    def __getitem__(self, *args):
+        return self._deps.get(*args)
+
+    def __iter__(self):
+        return self._deps.__iter__()
+
+    def __len__(self):
+        return len(self._deps)
+    
+    def reverse(self) -> dict:
+        ''' return a reversed dependency structure
+        where a key is target and a value is a list of child targets 
+        '''
+        targets = defaultdict(list)
+        for target, deps in self._deps.items():
+            if len(deps) == 0:
+                continue
+            for parent in deps:
+                targets[parent].append(target)
+
+        # remove duplicatest in target's children
+        for target, children in targets.items():
+            targets[target] = list(set(children))
+        
+        return targets
+
+    def parents(self, target:str) -> list:
+        ''' return a list of target's parents
+        '''
+        parents = list()
+        while True:
+            for parent in self._deps.get(target, []):
+                parents.append(parent)
+                parents.extend(self.parents(parent))
+            break
+        return sorted(set(parents))
+
+    def children(self, target:str) -> list:
+        ''' return a list of target's children
+        '''
+        _deps = self.reverse()
+        for children in _deps.get(target, []):
+            print(children)
+        return list()
+        
+
+def add_target_argumens(parser: ArgumentParser) -> ArgumentParser:
+    ''' add target CLI argeuments
+    '''
     parser.add_argument('--branch', type=str, nargs='?', default=None,
                                 help='specify branch from CI tool')
     parser.add_argument('--tag', type=str, nargs='?', default=None,
@@ -92,21 +144,31 @@ def add_target_argumens(parser: ArgumentParser) -> ArgumentParser:
                                 help='show changed targets')
     parser.add_argument('--generate-pipeline', action='store_true', 
                                 help='generate Gitlab CI pipeline for changed targets')
-    parser.add_argument('--target-info',  help='show targets')
+
+    parser.add_argument('--info',  help='show targets')
+    parser.add_argument('--deps', action='store_true', 
+                                help='Show target dependencies, child -> parent')
+    parser.add_argument('--reversed-deps', action='store_true', 
+                                help='Show target dependencies in reversed form, parent -> child')
+    parser.add_argument('--parents', type=str, 
+                                help='show target parent(-s)')
+    parser.add_argument('--children', type=str, 
+                                help='show target children')
     parser.set_defaults(handler=handle_cli_commands)
 
     return parser
 
 
 def handle_cli_commands(args):
-
+    ''' handle CLI commands
+    '''
     if args.show_targets:
         scanner = TargetScanner()
         for target_path in sorted(scanner.run()):
             print(f"- {target_path}")
     
-    elif args.target_info:
-        target = Target(args.target_info)
+    elif args.info:
+        target = Target(args.info)
         print(json.dumps(target.info))
 
     elif args.show_changed_targets:
@@ -133,3 +195,41 @@ def handle_cli_commands(args):
 
         if not changed_targets:
             logger.warning('No changed targets')
+
+    elif args.parents:
+
+        _target = args.parents
+
+        scanner = TargetScanner()
+        targets = { str(target_path): Target(target_path).info.get('depends', [])
+                        for target_path in sorted(scanner.run()) }
+        print(json.dumps(
+                    TargetDeps(targets).parents(_target)
+        ))
+
+    elif args.children:
+
+        _target = args.children
+
+        scanner = TargetScanner()
+        targets = { str(target_path): Target(target_path).info.get('depends', [])
+                        for target_path in sorted(scanner.run()) }
+        print(json.dumps(
+                    TargetDeps(targets).children(_target)
+        ))
+
+    elif args.deps:
+
+        scanner = TargetScanner()
+        targets = { str(target_path): Target(target_path).info.get('depends', [])
+                        for target_path in sorted(scanner.run()) }
+
+        print(json.dumps(targets))
+
+    elif args.reversed_deps:
+
+        scanner = TargetScanner()
+        targets = { str(target_path): Target(target_path).info.get('depends', [])
+                        for target_path in sorted(scanner.run()) }
+
+        print(json.dumps(TargetDeps(targets).reverse()))
