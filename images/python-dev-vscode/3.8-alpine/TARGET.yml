@@ -1,0 +1,8 @@
+---
+type: docker_image
+name: python-dev-vscode
+version: 3.8-alpine
+parameters:
+  shell: zsh
+depends:
+- images/python-dev/3.8-alpine

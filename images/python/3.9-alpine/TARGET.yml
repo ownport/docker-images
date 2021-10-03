@@ -1,8 +1,8 @@
 ---
 type: docker_image
 name: python
-version': 3.9-alpine
+version: 3.9-alpine
 parameters:
-  shell': sh
+  shell: sh
 depends: 
 - images/base/3.14-alpine
