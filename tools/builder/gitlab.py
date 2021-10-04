@@ -66,7 +66,7 @@ class GitLabYAMLGenerator:
             target_name = ':'.join([stage, target_name])
             print(DOCKER_TARGET_TEMPLATE.format(target_name=target_name, 
                                                 stage=stage,
-                                                dev_image=self._dev_image,
+                                                branch=self._branch,
                                                 target_path=target_path))
 
             if self._branch in ('devel', 'pre-release', 'release'):
