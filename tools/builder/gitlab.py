@@ -61,7 +61,7 @@ class GitLabYAMLGenerator:
         elif self._tag and self._tag.startswith('release/'):
             self._branch = 'release'
         elif RE_FEATURE_BRANCH.match(branch) or RE_BUGFIX_BRANCH.match(branch):
-            self._branch = '/'.join(RE_EXTRACT_BRANCH_AND_NUM.search(branch).groups())
+            self._branch = '-'.join(RE_EXTRACT_BRANCH_AND_NUM.search(branch).groups())
 
     def run(self, targets:list) -> None:
         ''' generate GitLab CI pipeline
