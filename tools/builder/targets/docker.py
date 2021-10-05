@@ -32,14 +32,14 @@ ERROR_REMOVE_DOCKER_IMAGE=1003
 ERROR_PUBLISH_DOCKER_IMAGE=1004
 
 # The list of supported branches
-SUPPORTED_BRANCHES = ['test', 'devel', 'pre-release', 'release']
+# SUPPORTED_BRANCHES = ['devel', 'pre-release', 'release']
 
 class Docker:
 
     def __init__(self, path:Path, branch:str) -> None:
 
-        if branch.lower() not in SUPPORTED_BRANCHES:
-            raise RuntimeError(f"Unknown branch name, {branch}. Supported: {SUPPORTED_BRANCHES}")
+        # if branch.lower() not in SUPPORTED_BRANCHES:
+        #     raise RuntimeError(f"Unknown branch name, {branch}. Supported: {SUPPORTED_BRANCHES}")
         self._branch = branch
 
         if not Path(path).joinpath('Dockerfile').exists():
