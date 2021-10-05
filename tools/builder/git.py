@@ -21,6 +21,8 @@ RE_BUGFIX_BRANCH = re.compile(r"^(?:origin/)?(bugfix/.+)")
 RE_DEVEL_BRANCH = re.compile(r"^(?:origin/)?devel")
 RE_MASTER_BRANCH = re.compile(r"^(?:origin/)?master")
 
+RE_EXTRACT_BRANCH_AND_NUM = re.compile(r"^(?:origin/)?(feature|bugfix)/(\d+).+")
+
 
 class Git:
 

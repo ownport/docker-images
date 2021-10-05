@@ -1,5 +1,10 @@
 
-from builder.git import RE_DEVEL_BRANCH, RE_FEATURE_BRANCH, RE_MASTER_BRANCH
+from builder.git import RE_MASTER_BRANCH
+from builder.git import RE_DEVEL_BRANCH
+from builder.git import RE_BUGFIX_BRANCH
+from builder.git import RE_FEATURE_BRANCH
+from builder.git import RE_EXTRACT_BRANCH_AND_NUM
+
 
 GITLAB_STAGES = [ 
   'buildtools', 
@@ -40,6 +45,7 @@ DOCKER_TARGET_TEMPLATE = '''
   script:
   - ./builder docker --build --target-path {target_path} --branch {branch}
   - ./builder docker --test --target-path {target_path} --branch {branch}
+  - ./builder docker --publish --target-path {target_path} --branch {branch}
 '''
 
 class GitLabYAMLGenerator:
@@ -54,8 +60,8 @@ class GitLabYAMLGenerator:
             self._branch = 'pre-release'
         elif self._tag and self._tag.startswith('release/'):
             self._branch = 'release'
-        else:
-            self._branch = 'test'
+        elif RE_FEATURE_BRANCH.match(branch) or RE_BUGFIX_BRANCH.match(branch):
+            self._branch = '/'.join(RE_EXTRACT_BRANCH_AND_NUM.search(branch).groups())
 
     def run(self, targets:list) -> None:
         ''' generate GitLab CI pipeline
@@ -68,6 +74,3 @@ class GitLabYAMLGenerator:
                                                 stage=stage,
                                                 branch=self._branch,
                                                 target_path=target_path))
-
-            if self._branch in ('devel', 'pre-release', 'release'):
-                print(f"  - ./builder docker --publish --target-path {target_path} --branch {self._branch}")
