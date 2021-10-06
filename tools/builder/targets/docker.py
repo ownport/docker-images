@@ -31,15 +31,21 @@ ERROR_TEST_DOCKER_IMAGE=1002
 ERROR_REMOVE_DOCKER_IMAGE=1003
 ERROR_PUBLISH_DOCKER_IMAGE=1004
 
+# The list of supported branches
+# SUPPORTED_BRANCHES = ['devel', 'pre-release', 'release']
 
 class Docker:
 
-    def __init__(self, path:Path, dev_image:bool=False) -> None:
+    def __init__(self, path:Path, branch:str) -> None:
+
+        # if branch.lower() not in SUPPORTED_BRANCHES:
+        #     raise RuntimeError(f"Unknown branch name, {branch}. Supported: {SUPPORTED_BRANCHES}")
+        self._branch = branch
 
         if not Path(path).joinpath('Dockerfile').exists():
             raise RuntimeError(f"Dockerfile does not exist in the path, {path}")
         self._target = Target(path)
-        
+
         target_type = self._target.info.get("type")
         if not target_type and target_type != 'docker_image':
             raise ValueError(f'Target type shall be "docker_image", founded: {target_type}')
@@ -53,10 +59,11 @@ class Docker:
             logger.warning('No docker version, using `latest`')
             self._docker_version = 'latest'
 
-        self._docker_image = "/".join([GITLAB_DOCKER_REGISTRY, GITLAB_GROUP, GITLAB_PROJECT, self._docker_image])
+        self._docker_image = "/".join([
+                                    GITLAB_DOCKER_REGISTRY, GITLAB_GROUP, 
+                                    GITLAB_PROJECT, self._branch, self._docker_image])
         self._docker_image_uri = ':'.join([self._docker_image, self._docker_version])
-        if dev_image:
-            self._docker_image_uri += "-dev"
+        
 
     def _run_command(self, command, errors="strict") -> subprocess.Popen:
 
@@ -84,6 +91,7 @@ class Docker:
         with pushd(self._target.path):
             try:
                 docker_command = ['build', 
+                                    '--build-arg', f'BRANCH={self._branch}',
                                     '--cache-from', self._docker_image_uri,
                                     '--tag', self._docker_image_uri, '.']
                 self._run_command(docker_command)
@@ -148,17 +156,17 @@ def add_docker_arguments(parser: ArgumentParser) -> ArgumentParser:
                                 help='test docker image for target')
     parser.add_argument('--publish', action='store_true', 
                                 help='publish docker image for target')
-    parser.add_argument('--dev-image', action='store_true', 
-                                help='create dev image for target')
+    parser.add_argument('--branch', type=str, required=True, default='test', 
+                                help='docker registry branch')
     parser.set_defaults(handler=handle_cli_commands)
 
 
 def handle_cli_commands(args):
 
     target_path = args.target_path
-    dev_image = args.dev_image
+    branch = args.branch
 
-    docker = Docker(path=target_path, dev_image=dev_image)
+    docker = Docker(path=target_path, branch=branch)
 
     if args.build:
         docker.build()
