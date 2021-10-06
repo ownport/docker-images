@@ -1,5 +1,10 @@
 
-from builder.git import RE_DEVEL_BRANCH, RE_MASTER_BRANCH
+from builder.git import RE_MASTER_BRANCH
+from builder.git import RE_DEVEL_BRANCH
+from builder.git import RE_BUGFIX_BRANCH
+from builder.git import RE_FEATURE_BRANCH
+from builder.git import RE_EXTRACT_BRANCH_AND_NUM
+
 
 GITLAB_STAGES = [ 
   'buildtools', 
@@ -38,17 +43,25 @@ DOCKER_TARGET_TEMPLATE = '''
 {target_name}:
   stage: {stage}
   script:
-  - ./builder docker --build --target-path {target_path} {dev_image}
-  - ./builder docker --test --target-path {target_path} {dev_image}
+  - ./builder docker --build --target-path {target_path} --branch {branch}
+  - ./builder docker --test --target-path {target_path} --branch {branch}
+  - ./builder docker --publish --target-path {target_path} --branch {branch}
 '''
 
 class GitLabYAMLGenerator:
 
     def __init__(self, branch:str=None, tag:str=None) -> None:
         
-        self._branch = branch
         self._tag = tag
-        self._dev_image = "--dev-image" if RE_DEVEL_BRANCH.match(self._branch) else ""
+
+        if RE_DEVEL_BRANCH.match(branch):
+            self._branch = 'devel'
+        elif RE_MASTER_BRANCH.match(branch):
+            self._branch = 'pre-release'
+        elif self._tag and self._tag.startswith('release/'):
+            self._branch = 'release'
+        elif RE_FEATURE_BRANCH.match(branch) or RE_BUGFIX_BRANCH.match(branch):
+            self._branch = '-'.join(RE_EXTRACT_BRANCH_AND_NUM.search(branch).groups())
 
     def run(self, targets:list) -> None:
         ''' generate GitLab CI pipeline
@@ -59,11 +72,5 @@ class GitLabYAMLGenerator:
             target_name = ':'.join([stage, target_name])
             print(DOCKER_TARGET_TEMPLATE.format(target_name=target_name, 
                                                 stage=stage,
-                                                dev_image=self._dev_image,
+                                                branch=self._branch,
                                                 target_path=target_path))
-
-            if RE_MASTER_BRANCH.match(self._branch) or RE_DEVEL_BRANCH.match(self._branch):
-                print(f"  - ./builder docker --publish --target-path {target_path} {self._dev_image}")
-
-            elif self._tag:
-                print(f"  - ./builder docker --publish --target-path {target_path}")

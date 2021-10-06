@@ -1,4 +1,5 @@
-FROM registry.gitlab.com/ownport/docker-images/base:20.04-ubuntu
+ARG BRANCH=${BRANCH}
+FROM registry.gitlab.com/ownport/docker-images/${BRANCH}/base:20.04-ubuntu
 
 COPY assets/ /tmp/assets/
 
