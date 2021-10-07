@@ -1,4 +1,5 @@
-FROM ownport/python:3.8-alpine
+ARG BRANCH=${BRANCH}
+FROM registry.gitlab.com/ownport/docker-images/${BRANCH}/python:3.9-alpine
 
 COPY assets/ /tmp/assets/
 
