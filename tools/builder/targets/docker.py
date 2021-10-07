@@ -5,21 +5,13 @@ import logging
 import subprocess
 
 from pathlib import Path
+from argparse import ArgumentParser
 
 from builder.fs import pushd
 from builder.target import Target
-
-from argparse import ArgumentParser
+from builder.settings import Settings
 
 logger = logging.getLogger(__name__)
-
-
-# GitLab Docker Registry
-GITLAB_DOCKER_REGISTRY="registry.gitlab.com"
-# GitLab Group
-GITLAB_GROUP="ownport"
-# GitLab Project
-GITLAB_PROJECT="docker-images"
 
 
 class DockerCommandException(Exception):
@@ -31,16 +23,15 @@ ERROR_TEST_DOCKER_IMAGE=1002
 ERROR_REMOVE_DOCKER_IMAGE=1003
 ERROR_PUBLISH_DOCKER_IMAGE=1004
 
-# The list of supported branches
-# SUPPORTED_BRANCHES = ['devel', 'pre-release', 'release']
 
 class Docker:
 
-    def __init__(self, path:Path, branch:str) -> None:
+    def __init__(self, path:Path, branch:str, settings:dict={}) -> None:
 
         # if branch.lower() not in SUPPORTED_BRANCHES:
         #     raise RuntimeError(f"Unknown branch name, {branch}. Supported: {SUPPORTED_BRANCHES}")
         self._branch = branch
+        self._settings = settings
 
         if not Path(path).joinpath('Dockerfile').exists():
             raise RuntimeError(f"Dockerfile does not exist in the path, {path}")
@@ -60,8 +51,9 @@ class Docker:
             self._docker_version = 'latest'
 
         self._docker_image = "/".join([
-                                    GITLAB_DOCKER_REGISTRY, GITLAB_GROUP, 
-                                    GITLAB_PROJECT, self._branch, self._docker_image])
+                                    self._settings.get('registry', None),
+                                    self._branch, 
+                                    self._docker_image])
         self._docker_image_uri = ':'.join([self._docker_image, self._docker_version])
         
 
@@ -165,8 +157,9 @@ def handle_cli_commands(args):
 
     target_path = args.target_path
     branch = args.branch
+    settings = Settings(args.settings)
 
-    docker = Docker(path=target_path, branch=branch)
+    docker = Docker(path=target_path, branch=branch, settings=settings.get('docker', {}))
 
     if args.build:
         docker.build()
