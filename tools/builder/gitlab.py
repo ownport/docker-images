@@ -6,14 +6,14 @@ from builder.git import RE_FEATURE_BRANCH
 from builder.git import RE_EXTRACT_BRANCH_AND_NUM
 
 
-GITLAB_STAGES = [ 
-  'buildtools', 
-  'base', 
-  'python', 'python-dev', 'python-dev-vscode',
-  'openjdk', 'sbt', 'scala', 
-  'nodejs', 'rust', 'bigdata', 'data-science',
-  'workflows', 'scraping', 'tools'
-]
+# GITLAB_STAGES = [ 
+#   'buildtools', 
+#   'base', 
+#   'python', 'python-dev', 'python-dev-vscode',
+#   'openjdk', 'sbt', 'scala', 
+#   'nodejs', 'rust', 'bigdata', 'data-science',
+#   'workflows', 'scraping', 'tools'
+# ]
 
 DOCKER_TEMPLATE_PIPELINE = '''
 ---
@@ -50,9 +50,10 @@ DOCKER_TARGET_TEMPLATE = '''
 
 class GitLabYAMLGenerator:
 
-    def __init__(self, branch:str=None, tag:str=None) -> None:
+    def __init__(self, branch:str=None, tag:str=None, settings:dict={}) -> None:
         
         self._tag = tag
+        self._settings = settings
 
         if RE_DEVEL_BRANCH.match(branch):
             self._branch = 'devel'
@@ -66,7 +67,11 @@ class GitLabYAMLGenerator:
     def run(self, targets:list) -> None:
         ''' generate GitLab CI pipeline
         '''
-        print(DOCKER_TEMPLATE_PIPELINE.format(STAGES='\n- '.join(GITLAB_STAGES)))
+        print(DOCKER_TEMPLATE_PIPELINE.format(
+                        STAGES='\n- '.join(
+                                        self._settings.get('stages', [])
+                        )
+        ))
         for target_path in targets:
             stage, target_name = str(target_path).split("/")[-2:]
             target_name = ':'.join([stage, target_name])
