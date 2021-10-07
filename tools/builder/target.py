@@ -9,6 +9,7 @@ from argparse import ArgumentParser
 from collections import defaultdict
 
 from itertools import chain
+
 flatten = chain.from_iterable
 
 try:
@@ -20,6 +21,7 @@ except ImportError:
 from builder.git import Git
 from builder.gitlab import GitLabYAMLGenerator
 
+from builder.settings import Settings
 from builder.libs.yaml import safe_load as yaml_load
 
 
@@ -189,6 +191,8 @@ def add_target_argumens(parser: ArgumentParser) -> ArgumentParser:
 def handle_cli_commands(args):
     ''' handle CLI commands
     '''
+    settings = Settings(args.settings)
+
     if args.show_targets:
         scanner = TargetScanner()
         for target_path in sorted(scanner.run()):
@@ -225,7 +229,9 @@ def handle_cli_commands(args):
         changed_targets = sorted(map(str, filter(None, changed_targets)))
         changed_targets = changed_targets + list(flatten([deps.children(target) for target in changed_targets]))
 
-        generator = GitLabYAMLGenerator(branch=git.branch_name, tag=args.tag)
+        generator = GitLabYAMLGenerator(branch=git.branch_name, 
+                                        tag=args.tag, 
+                                        settings=settings.get('gitlab', {}))
         generator.run(changed_targets)
 
         if not changed_targets:
