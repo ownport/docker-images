@@ -1,0 +1,8 @@
+---
+type: docker_image
+name: openjdk
+version: 11-jre-alpine
+parameters:
+  shell: sh
+depends:
+- images/base/3.14-alpine
