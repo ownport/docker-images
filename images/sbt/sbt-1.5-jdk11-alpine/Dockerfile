@@ -1,4 +1,5 @@
-FROM registry.gitlab.com/ownport/docker-images/openjdk:11-jdk-alpine
+ARG BRANCH=${BRANCH}
+FROM registry.gitlab.com/ownport/docker-images/${BRANCH}/openjdk:11-jdk-alpine
 
 COPY assets/ /tmp/assets/
 

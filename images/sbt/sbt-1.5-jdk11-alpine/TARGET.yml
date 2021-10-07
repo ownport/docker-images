@@ -1,0 +1,8 @@
+---
+type: docker_image
+name: sbt
+version: 1.5-jdk11-alpine
+parameters:
+  shell: sh
+depends:
+- images/openjdk/11-jdk-alpine
