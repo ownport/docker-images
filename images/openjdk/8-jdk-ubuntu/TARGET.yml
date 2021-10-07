@@ -1,0 +1,8 @@
+---
+type: docker_image
+name: openjdk
+version: 8-jdk-ubuntu
+parameters:
+  shell: bash
+depends:
+- images/base/20.10-ubuntu
