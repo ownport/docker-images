@@ -1,0 +1,8 @@
+---
+type: docker_image
+name: nodejs
+version: 12.18-alpine
+parameters:
+  shell: sh
+depends:
+- images/base/3.14-alpine
