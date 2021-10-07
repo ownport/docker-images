@@ -125,7 +125,8 @@ class Docker:
     def publish(self) -> None:
         ''' Publish docker image for target
         '''
-        logger.info(f'Removing docker image for target: {self._target.info} to GitLab Registry: {GITLAB_DOCKER_REGISTRY}')
+        logger.info(f'Removing docker image for target: {self._target.info} ' + 
+                    f'to GitLab Registry: {self._settings.get("registry", None)}')
         logger.info(f"Docker image: {self._docker_image_uri}")
 
         # Push docker image(-s) to GitLab Docker Registry
