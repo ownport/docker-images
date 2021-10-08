@@ -26,5 +26,6 @@ gitlab:
 
   # tools
   - bazel
+  - bazel-dind
   - kaniko
-
+  - kaniko-builder
