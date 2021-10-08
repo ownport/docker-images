@@ -13,9 +13,6 @@ echo '[TEST] Check java version' && \
 echo '[TEST] Check javac version' && \
     javac -version
 
-echo "[TEST] Check sbt version" && \
-    cd /tmp && sbt --version
-
 echo "[TEST] Check scala version" && \
     scala --version 
 
