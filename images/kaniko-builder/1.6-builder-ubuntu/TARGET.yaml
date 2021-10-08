@@ -5,4 +5,4 @@ version: 1.6-builder-ubuntu
 parameters:
   shell: bash
 depends:
-- images/base/kaniko:1.6-ubuntu
+- images/kaniko/1.6-ubuntu
