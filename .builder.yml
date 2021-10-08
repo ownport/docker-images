@@ -6,18 +6,26 @@ docker:
 gitlab:
   stages:
   - buildtools
+
   - base 
+
+  # python
   - python
   - python-dev
   - python-dev-vscode
+
   - openjdk
   - sbt
   - scala
+
   - nodejs
   - rust
   - bigdata
   - data-science
   - workflows
   - scraping
-  - tools
+
+  # tools
+  - bazel
+  - kaniko
 
