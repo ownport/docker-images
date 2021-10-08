@@ -67,6 +67,7 @@ class GitLabYAMLGenerator:
                                         self._settings.get('stages', [])
                         )
         ))
+        print(targets)
         for target_path in targets:
             try:
                 stage, target_name = str(target_path).split("/")[-2:]
