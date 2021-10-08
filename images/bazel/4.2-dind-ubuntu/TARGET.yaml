@@ -1,0 +1,8 @@
+---
+type: docker_image
+name: bazel
+version': 4.2-dind-ubuntu
+parameters:
+  shell: bash
+depends: 
+- images/bazel/4.2-ubuntu

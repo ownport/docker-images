@@ -1,4 +1,5 @@
-FROM registry.gitlab.com/ownport/docker-images/openjdk:8-jdk-ubuntu
+ARG BRANCH=${BRANCH}
+FROM registry.gitlab.com/ownport/docker-images/${BRANCH}/openjdk:8-jdk-ubuntu
 
 COPY assets/ /tmp/assets/
 
