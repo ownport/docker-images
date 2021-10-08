@@ -5,4 +5,4 @@ version: 4.2-ubuntu
 parameters:
   shell: sh
 depends:
-  images/openjdk/8-jdk-ubuntu
+- images/openjdk/8-jdk-ubuntu
