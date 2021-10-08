@@ -23,9 +23,3 @@ echo "[INFO] Installing Scala-${SCALA_VERSION}" && \
 # Cleanup procedure
 deploy-utils.sh cleanup
 
-echo "[INFO] Basic smoke tests" && \
-    java -version && \
-    javac -version && \
-    scala --version && \
-    scalac --version
-
