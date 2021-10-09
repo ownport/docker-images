@@ -95,16 +95,17 @@ class KanikoImage:
     def update_config(settings:dict) -> None:
         ''' Update kaniko configuration 
         '''
-        config_path = settings.get('config')
-        if not Path(os.path.dirname(config_path)):
-            os.makedirs(os.path.dirname(config_path))
-
         CI_REGISTRY = os.environ.get("CI_REGISTRY")
         CI_REGISTRY_USER = os.environ.get("CI_REGISTRY_USER")
         CI_REGISTRY_PASSWORD = os.environ.get("CI_REGISTRY_PASSWORD")
         if not CI_REGISTRY or not CI_REGISTRY_USER or not CI_REGISTRY_PASSWORD:
             logger.error('Missed one of environment variables: CI_REGISTRY or CI_REGISTRY_USER or CI_REGISTRY_PASSWORD')
             sys.exit(ERROR_ENV_CONFIGURATION)
+
+        config_path = settings.get('config')
+        logger.info(f'Kaniko configiration file: {config_path}')
+        if not Path(os.path.dirname(config_path)).exists():
+            os.makedirs(os.path.dirname(config_path))
 
         config_json = { 'auths': {
                 f"{CI_REGISTRY}" : { "auth": base64.b64encode(
