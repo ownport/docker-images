@@ -1,5 +1,6 @@
 
 import os
+from posixpath import abspath
 import sys
 import json
 import base64
@@ -76,7 +77,7 @@ class KanikoImage:
         # Build docker image with kaniko executor
         with pushd(self._target.path):
             try:
-                target_path = self._target.info.get('path')
+                target_path = os.path.abspath(self._target.info.get('path'))
                 kaniko_command = [
                     '--context', target_path,
                     '--dockerfile', os.path.join(target_path, 'Dockerfile'),
