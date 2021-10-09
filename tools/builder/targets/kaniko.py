@@ -80,12 +80,13 @@ class KanikoImage:
                 kaniko_command = [
                     '--context', target_path,
                     '--dockerfile', target_path.join('Dockerfile'),
-                    # '--build-arg', f'BRANCH={self._branch}',
+                    '--build-arg', f'BRANCH={self._branch}',
+                    '--cache',
                     # '--cache-from', self._docker_image_uri,
                     '--destination', self._image_uri ]
                 self._run_command(kaniko_command)
             except KanikoImageCommandException:
-                logger.error(f'Failed to build docker image, image: {self._docker_image_uri}, tag: {self._docker_image_uri}')
+                logger.error(f'Failed to build docker image, image: {self._image_uri}')
                 sys.exit(ERROR_BUILD_KANIKO_IMAGE)
 
     def update_config(self) -> None:
