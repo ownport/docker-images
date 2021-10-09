@@ -77,10 +77,10 @@ class KanikoImage:
         # Build docker image with kaniko executor
         with pushd(self._target.path):
             try:
-                target_path = os.path.abspath(self._target.info.get('path'))
+                # target_path = os.path.abspath(self._target.info.get('path'))
                 kaniko_command = [
-                    '--context', target_path,
-                    '--dockerfile', os.path.join(target_path, 'Dockerfile'),
+                    '--context', '.',
+                    '--dockerfile', 'Dockerfile',
                     '--build-arg', f'BRANCH={self._branch}',
                     '--cache',
                     # '--cache-from', self._docker_image_uri,
