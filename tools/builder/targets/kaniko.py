@@ -23,6 +23,7 @@ class KanikoImageCommandException(Exception):
 # Error codes
 ERROR_ENV_CONFIGURATION=1001
 ERROR_BUILD_KANIKO_IMAGE=1002
+ERROR_BUILD_CONFIG=1003
 
 
 class KanikoImage:
@@ -116,13 +117,13 @@ class KanikoImage:
 
 def add_kaniko_arguments(parser: ArgumentParser) -> ArgumentParser:
 
-    parser.add_argument('--target-path', type=str, required=True,
+    parser.add_argument('--target-path', type=str,
                                 help='The path to target')
     parser.add_argument('--build', action='store_true', 
                                 help='build docker image for target')
     parser.add_argument('--update-config', action='store_true', 
                                 help='update kaniko config with registry auth settings')
-    parser.add_argument('--branch', type=str, required=True, default='test', 
+    parser.add_argument('--branch', type=str, default='test', 
                                 help='docker registry branch')
     parser.set_defaults(handler=handle_cli_commands)
 
@@ -137,5 +138,9 @@ def handle_cli_commands(args):
         KanikoImage.update_config(settings.get('kaniko'))
 
     elif args.build:
+        if not target_path or not branch:
+            logger.error("The following arguments are required for build action: --target-path, --branch")
+            sys.exit(ERROR_BUILD_CONFIG)
+
         kaniko = KanikoImage(path=target_path, branch=branch, settings=settings.get('kaniko', {}))
         kaniko.build()
