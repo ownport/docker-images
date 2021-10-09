@@ -49,6 +49,7 @@ KANIKO_TARGET_TEMPLATE = '''
   stage: {stage}
   script:
   - ./builder kaniko --update-config
+  - cat /kaniko/.docker/config.json
   - ./builder kaniko --build --target-path {target_path} --branch {branch}
 '''
 
