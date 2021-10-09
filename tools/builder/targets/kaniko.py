@@ -109,6 +109,9 @@ class KanikoImage:
             os.makedirs(config_dirname)
         os.environ['DOCKER_CONFIG'] = config_dirname
 
+        for k,v in os.environ.items():
+            print(k,v)
+
         config_json = { 'auths': {
                 f"{CI_REGISTRY}" : { "auth": base64.b64encode(
                                                         f"{CI_REGISTRY_USER}:{CI_REGISTRY_PASSWORD}".encode('ascii')
