@@ -1,7 +1,7 @@
 ---
 type: docker_image
 name: openjdk
-version: 8-jdk-alpine
+version: 8-jre-alpine
 parameters:
   shell: sh
 depends:

@@ -1,4 +1,5 @@
-FROM registry.gitlab.com/ownport/docker-images/base:3.14-alpine
+ARG BRANCH=${BRANCH}
+FROM registry.gitlab.com/ownport/docker-images/${BRANCH}/base:3.14-alpine
 
 COPY assets/ /tmp/assets/
 

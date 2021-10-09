@@ -1,19 +1,14 @@
 
+import logging
+
 from builder.git import RE_MASTER_BRANCH
 from builder.git import RE_DEVEL_BRANCH
 from builder.git import RE_BUGFIX_BRANCH
 from builder.git import RE_FEATURE_BRANCH
 from builder.git import RE_EXTRACT_BRANCH_AND_NUM
 
+logger = logging.getLogger(__name__)
 
-# GITLAB_STAGES = [ 
-#   'buildtools', 
-#   'base', 
-#   'python', 'python-dev', 'python-dev-vscode',
-#   'openjdk', 'sbt', 'scala', 
-#   'nodejs', 'rust', 'bigdata', 'data-science',
-#   'workflows', 'scraping', 'tools'
-# ]
 
 DOCKER_TEMPLATE_PIPELINE = '''
 ---
@@ -73,9 +68,12 @@ class GitLabYAMLGenerator:
                         )
         ))
         for target_path in targets:
-            stage, target_name = str(target_path).split("/")[-2:]
-            target_name = ':'.join([stage, target_name])
-            print(DOCKER_TARGET_TEMPLATE.format(target_name=target_name, 
-                                                stage=stage,
-                                                branch=self._branch,
-                                                target_path=target_path))
+            try:
+                stage, target_name = str(target_path).split("/")[-2:]
+                target_name = ':'.join([stage, target_name])
+                print(DOCKER_TARGET_TEMPLATE.format(target_name=target_name, 
+                                                    stage=stage,
+                                                    branch=self._branch,
+                                                    target_path=target_path))
+            except:
+                logger.warning(f'Cannot detect stage and target name from target path, ${target_path}')

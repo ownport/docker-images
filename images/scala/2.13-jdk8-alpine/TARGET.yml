@@ -1,0 +1,8 @@
+---
+type: docker_image
+name: scala
+version: 2.13-jdk8-alpine
+parameters:
+  shell: sh
+depends:
+- images/openjdk/8-jdk-alpine
