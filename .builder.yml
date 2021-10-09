@@ -4,6 +4,7 @@ docker:
   registry: registry.gitlab.com/ownport/docker-images
 
 kaniko:
+  registry: registry.gitlab.com/ownport/docker-images
   config: /kaniko/.docker/config.json
 
 gitlab:
