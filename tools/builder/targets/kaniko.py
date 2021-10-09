@@ -108,7 +108,9 @@ class KanikoImage:
         config_dirname = os.path.dirname(config_path)
         if not Path(config_dirname).exists():
             os.makedirs(config_dirname)
+
         os.environ['DOCKER_CONFIG'] = config_dirname
+        os.environ['SSL_CERT_DIR'] = '/kaniko/ssl/certs'
 
         config_json = { 'auths': {
                 f"{CI_REGISTRY}" : { "auth": base64.b64encode(
