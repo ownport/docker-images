@@ -106,7 +106,9 @@ class KanikoImage:
             sys.exit(ERROR_ENV_CONFIGURATION)
 
         config_json = { 'auths': {
-                f"${CI_REGISTRY}" : { "auth": f"${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD}" }
+                f"${CI_REGISTRY}" : { "auth": base64.b64encode(
+                                                        f"${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD}".encode('ascii')
+                ) }
         }}
 
         with open(config_path, 'w') as kaniko_config:
