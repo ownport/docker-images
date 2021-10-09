@@ -1,0 +1,9 @@
+---
+type: docker_image
+name: scrapy
+version: 2.5-alpine
+parameters:
+  shell: zsh
+depends:
+- images/python/3.9-alpine
+
