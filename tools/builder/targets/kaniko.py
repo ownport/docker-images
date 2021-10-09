@@ -135,7 +135,7 @@ def handle_cli_commands(args):
     settings = Settings(args.settings)
 
     if args.update_config:
-        KanikoImage.update_config(settings.get('kaniko'))
+        KanikoImage.update_config(settings.get('kaniko', default={}))
 
     elif args.build:
         if not target_path or not branch:
