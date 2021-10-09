@@ -1,7 +1,7 @@
 ---
 type: docker_image
-name: openjdk
-version: 8-jdk-alpine
+name: nodejs
+version: 12.18-alpine
 parameters:
   shell: sh
 depends:
