@@ -63,6 +63,7 @@ class KanikoImage:
     def _run_command(self, command, errors="strict") -> subprocess.Popen:
 
         command = ['executor', ] + command
+        logger.info(f"Current directory: {os.path.abspath(os.curdir)}")
         logger.info(f"Run command: {' '.join(command)}")
         process =  subprocess.Popen(command, stdin=subprocess.PIPE, stdout=sys.stdout, stderr=sys.stderr)
         process.communicate()
@@ -108,9 +109,6 @@ class KanikoImage:
         if not Path(config_dirname).exists():
             os.makedirs(config_dirname)
         os.environ['DOCKER_CONFIG'] = config_dirname
-
-        for k,v in os.environ.items():
-            print(k,v)
 
         config_json = { 'auths': {
                 f"{CI_REGISTRY}" : { "auth": base64.b64encode(
