@@ -95,7 +95,9 @@ class KanikoImage:
     def update_config(settings:dict) -> None:
         ''' Update kaniko configuration 
         '''
-        # os.makedirs("/kaniko/.docker")
+        config_path = settings.get('config')
+        os.makedirs(os.path.dirname(config_path))
+
         CI_REGISTRY = os.environ.get("CI_REGISTRY")
         CI_REGISTRY_USER = os.environ.get("CI_REGISTRY_USER")
         CI_REGISTRY_PASSWORD = os.environ.get("CI_REGISTRY_PASSWORD")
@@ -106,8 +108,8 @@ class KanikoImage:
         config_json = { 'auths': {
                 f"${CI_REGISTRY}" : { "auth": f"${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD}" }
         }}
-        # with open("/kaniko/.docker/config.json") as kaniko_config:
-        with open(settings.get('config'), 'w') as kaniko_config:
+
+        with open(config_path, 'w') as kaniko_config:
             kaniko_config.write("{}\n".format(
                 json.dumps(config_json)
                 # base64.encode(json.dumps(config_json), 'ascii')
