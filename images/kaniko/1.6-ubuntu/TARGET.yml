@@ -5,4 +5,4 @@ version: 1.6-ubuntu
 parameters:
   shell: bash
 depends:
-- images/base/20.04-ubuntu
+- images/base/20.10-ubuntu
