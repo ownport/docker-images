@@ -76,12 +76,13 @@ class KanikoImage:
         # Build docker image with kaniko executor
         with pushd(self._target.path):
             try:
+                target_path = self._target.info.get('path')
                 kaniko_command = [
-                    '--context', self._target_path,
-                    '--dockerfile', self._target.info.get('path'),
+                    '--context', target_path,
+                    '--dockerfile', target_path.join('Dockerfile'),
                     # '--build-arg', f'BRANCH={self._branch}',
                     # '--cache-from', self._docker_image_uri,
-                    '--destination', self._docker_image_uri]
+                    '--destination', self._docker_image_uri ]
                 self._run_command(kaniko_command)
             except KanikoImageCommandException:
                 logger.error(f'Failed to build docker image, image: {self._docker_image_uri}, tag: {self._docker_image_uri}')
@@ -98,13 +99,11 @@ class KanikoImage:
             logger.error('Missed one of environment variables: CI_REGISTRY or CI_REGISTRY_USER or CI_REGISTRY_PASSWORD')
             sys.exit(ERROR_ENV_CONFIGURATION)
 
-        config_json = {
-            'auths': {
+        config_json = { 'auths': {
                 f"${CI_REGISTRY}" : { "auth": f"${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD}" }
-            }
-        }
+        }}
         # with open("/kaniko/.docker/config.json") as kaniko_config:
-        with open('config.json', 'w') as kaniko_config:
+        with open(self._settings.get('config'), 'w') as kaniko_config:
             kaniko_config.write("{}\n".format(
                 json.dumps(config_json)
                 # base64.encode(json.dumps(config_json), 'ascii')
@@ -131,7 +130,7 @@ def handle_cli_commands(args):
     branch = args.branch
     settings = Settings(args.settings)
 
-    kaniko = KanikoImage(path=target_path, branch=branch, settings=settings.get('docker', {}))
+    kaniko = KanikoImage(path=target_path, branch=branch, settings=settings.get('kaniko', {}))
 
     if args.update_config:
         kaniko.update_config()
