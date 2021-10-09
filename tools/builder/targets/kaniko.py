@@ -90,7 +90,8 @@ class KanikoImage:
                 logger.error(f'Failed to build docker image, image: {self._image_uri}')
                 sys.exit(ERROR_BUILD_KANIKO_IMAGE)
 
-    def update_config(self) -> None:
+    @staticmethod
+    def update_config(settings:dict) -> None:
         ''' Update kaniko configuration 
         '''
         # os.makedirs("/kaniko/.docker")
@@ -105,7 +106,7 @@ class KanikoImage:
                 f"${CI_REGISTRY}" : { "auth": f"${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD}" }
         }}
         # with open("/kaniko/.docker/config.json") as kaniko_config:
-        with open(self._settings.get('config'), 'w') as kaniko_config:
+        with open(settings.get('config'), 'w') as kaniko_config:
             kaniko_config.write("{}\n".format(
                 json.dumps(config_json)
                 # base64.encode(json.dumps(config_json), 'ascii')
@@ -132,10 +133,9 @@ def handle_cli_commands(args):
     branch = args.branch
     settings = Settings(args.settings)
 
-    kaniko = KanikoImage(path=target_path, branch=branch, settings=settings.get('kaniko', {}))
-
     if args.update_config:
-        kaniko.update_config()
+        KanikoImage.update_config(settings.get('kaniko'))
 
     elif args.build:
+        kaniko = KanikoImage(path=target_path, branch=branch, settings=settings.get('kaniko', {}))
         kaniko.build()
