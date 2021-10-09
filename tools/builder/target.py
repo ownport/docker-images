@@ -94,11 +94,6 @@ class TargetScanner(TargetBase):
             target_path = target_file.relative_to(self._path).parent 
             yield target_path
 
-        # print('\nDepreacted targets:')
-        # for target_file in self._path.glob("**/metadata"):
-        #     target_path = target_file.relative_to(self._path).parent 
-        #     print(f"- {target_path}")
-
 
 class TargetDeps(Mapping):
     ''' Representation of Target dependencies as directed acyclic graph

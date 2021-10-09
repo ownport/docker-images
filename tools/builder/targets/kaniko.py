@@ -57,7 +57,7 @@ class KanikoImage:
                                     self._image_name])
         self._image_uri = ':'.join([self._image_uri, self._image_version])
 
-        logger.info(f'Image URI: ${self._image_uri}')
+        logger.info(f'Image URI: {self._image_uri}')
         
 
     def _run_command(self, command, errors="strict") -> subprocess.Popen:
@@ -96,7 +96,8 @@ class KanikoImage:
         ''' Update kaniko configuration 
         '''
         config_path = settings.get('config')
-        os.makedirs(os.path.dirname(config_path))
+        if not Path(os.path.dirname(config_path)):
+            os.makedirs(os.path.dirname(config_path))
 
         CI_REGISTRY = os.environ.get("CI_REGISTRY")
         CI_REGISTRY_USER = os.environ.get("CI_REGISTRY_USER")
@@ -106,8 +107,8 @@ class KanikoImage:
             sys.exit(ERROR_ENV_CONFIGURATION)
 
         config_json = { 'auths': {
-                f"${CI_REGISTRY}" : { "auth": base64.b64encode(
-                                                        f"${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD}".encode('ascii')
+                f"{CI_REGISTRY}" : { "auth": base64.b64encode(
+                                                        f"{CI_REGISTRY_USER}:{CI_REGISTRY_PASSWORD}".encode('ascii')
                 ).decode('ascii') }
         }}
 
