@@ -6,6 +6,7 @@ from builder.git import add_git_arguments
 from builder.target import add_target_argumens
 from builder.docker_tools import add_docker_tools_arguments
 from builder.targets.docker import add_docker_arguments
+from builder.targets.kaniko import add_kaniko_arguments
 
 
 logger = logging.getLogger(__name__)
@@ -25,20 +26,24 @@ def run_cli():
                         help='The path to builder settings file, default: ./builder.yml')
     
     # Git commands
-    git_parser = subparsers.add_parser('git', help='Git commands')
-    git_parser = add_git_arguments(git_parser)
+    add_git_arguments(
+        subparsers.add_parser('git', help='Git commands'))
 
     # Target commands
-    target_parser = subparsers.add_parser('target', help='Target commands')
-    target_parser = add_target_argumens(target_parser)
+    add_target_argumens(
+        subparsers.add_parser('target', help='Target commands'))
 
     # Docker commands
-    docker_parser = subparsers.add_parser('docker', help='Docker commads')
-    docker_parser = add_docker_arguments(docker_parser)
+    add_docker_arguments(
+        subparsers.add_parser('docker', help='Docker commads'))
 
     # Docker Tools commands
-    docker_tools_parser = subparsers.add_parser('docker-tools', help='Docker Tools commads')
-    docker_tools_parser = add_docker_tools_arguments(docker_tools_parser)
+    add_docker_tools_arguments(
+        subparsers.add_parser('docker-tools', help='Docker Tools commads'))
+
+    # Kaniko commands
+    add_kaniko_arguments(
+        subparsers.add_parser('kaniko', help='Kaniko commands'))
 
     # Main
     args = parser.parse_args()

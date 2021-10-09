@@ -3,6 +3,9 @@ docker:
   # GitLab Docker Registry
   registry: registry.gitlab.com/ownport/docker-images
 
+kaniko:
+  config: /kaniko/.docker/config.json
+
 gitlab:
   stages:
   - buildtools
