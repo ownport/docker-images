@@ -79,7 +79,7 @@ class KanikoImage:
                 target_path = self._target.info.get('path')
                 kaniko_command = [
                     '--context', target_path,
-                    '--dockerfile', target_path.join('Dockerfile'),
+                    '--dockerfile', os.path.join(target_path, 'Dockerfile'),
                     '--build-arg', f'BRANCH={self._branch}',
                     '--cache',
                     # '--cache-from', self._docker_image_uri,
