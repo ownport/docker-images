@@ -60,7 +60,7 @@ class KanikoImage:
 
     def _run_command(self, command, errors="strict") -> subprocess.Popen:
 
-        command = ['/kaniko/executor', ] + command
+        command = ['executor', ] + command
         logger.info(f"Run command: {' '.join(command)}")
         process =  subprocess.Popen(command, stdin=subprocess.PIPE, stdout=sys.stdout, stderr=sys.stderr)
         process.communicate()
