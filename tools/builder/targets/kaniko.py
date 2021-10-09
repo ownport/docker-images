@@ -82,7 +82,7 @@ class KanikoImage:
                     '--dockerfile', target_path.join('Dockerfile'),
                     # '--build-arg', f'BRANCH={self._branch}',
                     # '--cache-from', self._docker_image_uri,
-                    '--destination', self._docker_image_uri ]
+                    '--destination', self._image_uri ]
                 self._run_command(kaniko_command)
             except KanikoImageCommandException:
                 logger.error(f'Failed to build docker image, image: {self._docker_image_uri}, tag: {self._docker_image_uri}')
