@@ -141,13 +141,11 @@ class TargetDeps(Mapping):
     def parents(self, target:str) -> list:
         ''' return a list of target's parents
         '''
-        parents = list()
-        while True:
-            for parent in self._deps.get(target, []):
-                parents.append(parent)
-                parents.extend(self.parents(parent))
-            break
-        return sorted(set(parents))
+        _parents = list()
+        for parent in self._deps.get(target, []):
+            _parents.append(parent)
+            _parents.extend(self.parents(parent))
+        return sorted(set(_parents))
 
     def children(self, target:str) -> list:
         ''' return a list of target's children

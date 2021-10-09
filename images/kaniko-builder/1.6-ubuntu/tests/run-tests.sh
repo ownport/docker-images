@@ -13,5 +13,5 @@ echo '[TEST] Print out Python3 version' && \
 echo '[TEST] Print out Git version' && \
     git --version
 
-echo '[TEST] Print out Docker version' && \
-    docker --version
+# echo '[TEST] Print out Docker version' && \
+#     docker --version
