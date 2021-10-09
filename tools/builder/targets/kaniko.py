@@ -104,8 +104,10 @@ class KanikoImage:
 
         config_path = settings.get('config')
         logger.info(f'Kaniko configiration file: {config_path}')
-        if not Path(os.path.dirname(config_path)).exists():
-            os.makedirs(os.path.dirname(config_path))
+        config_dirname = os.path.dirname(config_path)
+        if not Path(config_dirname).exists():
+            os.makedirs(config_dirname)
+        os.environ['DOCKER_CONFIG'] = config_dirname
 
         config_json = { 'auths': {
                 f"{CI_REGISTRY}" : { "auth": base64.b64encode(
