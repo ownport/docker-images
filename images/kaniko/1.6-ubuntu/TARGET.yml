@@ -4,5 +4,5 @@ name: kaniko
 version: 1.6-ubuntu
 parameters:
   shell: bash
-dependencies:
+depends:
 - images/base/20.04-ubuntu
