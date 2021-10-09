@@ -108,7 +108,7 @@ class KanikoImage:
         config_json = { 'auths': {
                 f"${CI_REGISTRY}" : { "auth": base64.b64encode(
                                                         f"${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD}".encode('ascii')
-                ) }
+                ).decode('ascii') }
         }}
 
         with open(config_path, 'w') as kaniko_config:
