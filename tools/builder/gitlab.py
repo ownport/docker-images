@@ -48,9 +48,9 @@ KANIKO_TARGET_TEMPLATE = '''
 {target_name}:
   stage: {stage}
   script:
+  # - ./builder kaniko --update-config
   - mkdir -p /kaniko/.docker
   - echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(echo -n ${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD} | base64)\"}}}" > /kaniko/.docker/config.json
-  # - ./builder kaniko --update-config
   - ./builder kaniko --build --target-path {target_path} --branch {branch}
 '''
 
