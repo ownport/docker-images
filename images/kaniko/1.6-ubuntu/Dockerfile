@@ -1,6 +1,7 @@
+ARG BRANCH=${BRANCH}
+
 FROM gcr.io/kaniko-project/executor:v1.6.0 as kaniko_binary
 
-ARG BRANCH=${BRANCH}
 FROM registry.gitlab.com/ownport/docker-images/${BRANCH}/base:20.10-ubuntu
 
 COPY assets/ /tmp/assets/
