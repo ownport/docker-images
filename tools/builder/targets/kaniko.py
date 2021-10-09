@@ -85,6 +85,7 @@ class KanikoImage:
                     '--dockerfile', 'Dockerfile',
                     '--build-arg', f'BRANCH={self._branch}',
                     '--cache',
+                    '--verbosity', 'debug',  
                     # '--cache-from', self._docker_image_uri,
                     '--destination', self._image_uri ]
                 self._run_command(kaniko_command)
