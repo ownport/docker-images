@@ -58,14 +58,23 @@ class KanikoImage:
         self._image_uri = ':'.join([self._image_uri, self._image_version])
 
         logger.info(f'Image URI: {self._image_uri}')
-        
+
+        os.environ['DOCKER_CONFIG'] = '/kaniko/.docker/'
+        os.environ['SSL_CERT_DIR'] = '/kaniko/ssl/certs'
+
 
     def _run_command(self, command, errors="strict") -> subprocess.Popen:
+
+        kaniko_env = os.environ.copy()
 
         command = ['executor', ] + command
         logger.info(f"Current directory: {os.path.abspath(os.curdir)}")
         logger.info(f"Run command: {' '.join(command)}")
-        process =  subprocess.Popen(command, stdin=subprocess.PIPE, stdout=sys.stdout, stderr=sys.stderr)
+        process =  subprocess.Popen(command, 
+                                    stdin=subprocess.PIPE, 
+                                    stdout=sys.stdout, 
+                                    stderr=sys.stderr,
+                                    env=kaniko_env)
         process.communicate()
         if process.returncode != 0:
             raise KanikoImageCommandException() 
@@ -110,9 +119,6 @@ class KanikoImage:
         if not Path(config_dirname).exists():
             os.makedirs(config_dirname)
 
-        os.environ['DOCKER_CONFIG'] = config_dirname
-        os.environ['SSL_CERT_DIR'] = '/kaniko/ssl/certs'
-
         config_json = { 'auths': {
                 f"{CI_REGISTRY}" : { "auth": base64.b64encode(
                                                         f"{CI_REGISTRY_USER}:{CI_REGISTRY_PASSWORD}".encode('ascii')
@@ -122,7 +128,6 @@ class KanikoImage:
         with open(config_path, 'w') as kaniko_config:
             kaniko_config.write("{}\n".format(
                 json.dumps(config_json)
-                # base64.encode(json.dumps(config_json), 'ascii')
             ))
 
 
