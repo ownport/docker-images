@@ -22,7 +22,7 @@ case ${1} in
         pip3 install --no-cache-dir $@
         ;;
     cleanup)
-        cleanup_cache_files /usr/lib/python3.8/
+        cleanup_cache_files /usr/lib/python3.9/
         ;;
     *)
         if [ ! "$@" ]; then
