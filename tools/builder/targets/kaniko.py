@@ -129,7 +129,6 @@ class KanikoImage:
             ))
 
 
-
 def add_kaniko_arguments(parser: ArgumentParser) -> ArgumentParser:
 
     parser.add_argument('--target-path', type=str,

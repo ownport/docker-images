@@ -1,5 +1,5 @@
 ---
-type: kaniko-image
+type: docker_image
 name: python-dev-vscode
 version: 3.8-alpine
 parameters:
