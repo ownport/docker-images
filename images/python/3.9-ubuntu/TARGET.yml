@@ -1,0 +1,9 @@
+---
+type: docker_image
+name: python
+version: 3.9-ubuntu
+parameters:
+  shell: bash
+depends:
+- images/base/21.04-ubuntu
+
