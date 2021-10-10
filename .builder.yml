@@ -25,6 +25,7 @@ gitlab:
   - scraping
 
   # tools
+  - podman
   - bazel
   - bazel-dind
   - kaniko
