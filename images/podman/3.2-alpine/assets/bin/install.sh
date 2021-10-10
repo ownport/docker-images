@@ -6,7 +6,7 @@ set -eu
 deploy-utils.sh update
 
 # Installation
-deploy-utils.sh install "podman"
+deploy-utils.sh install "podman=3.2.3"
 
 # Cleanup procedure
 deploy-utils.sh cleanup
