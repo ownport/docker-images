@@ -1,0 +1,8 @@
+---
+type: docker_image
+name: podman
+version: 3.2-alpine
+parameters:
+  shell: sh
+depends:
+- images/base/3.14-alpine
