@@ -6,6 +6,8 @@ set -eu
 deploy-utils.sh update
 
 # Installation
+deploy-utils.sh install "apt-utils"
+
 deploy-utils.sh install "python3"
 
 # Cleanup procedure
