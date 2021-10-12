@@ -1,0 +1,6 @@
+---
+type: docker_image
+name: kaniko
+version: 1.6-slim
+parameters:
+  shell: sh
