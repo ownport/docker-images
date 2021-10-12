@@ -9,7 +9,7 @@ COPY assets/ /tmp/assets/
 RUN echo "[INFO] Create kaniko directory structure" && \
         mkdir -p /kaniko/ssl/certs && \
     echo "[INFO] Install update-docker-config.sh script" && \
-        mv /tmp/assets/update-docker-config.sh /kaniko
+        mv /tmp/assets/bin/update-docker-config.sh /kaniko
 
 
 COPY --from=kaniko_binary /kaniko/executor /kaniko
