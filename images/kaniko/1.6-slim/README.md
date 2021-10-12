@@ -1,6 +1,8 @@
 # Kaniko
 
-Build Container Images In Kubernetes 
+Build Container Images 
+
+The image `kaniko:1.6-slim` is customized for building docker image for [ownport/docker-images GitLab repo](https://gitlab.com/ownport/docker-images/)
 
 ## References
 
