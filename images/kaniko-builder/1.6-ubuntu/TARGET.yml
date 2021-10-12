@@ -1,8 +1,0 @@
----
-type: docker_image
-name: kaniko-builder
-version: 1.6-ubuntu
-parameters:
-  shell: bash
-depends:
-- images/kaniko/1.6-ubuntu
