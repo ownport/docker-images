@@ -4,7 +4,13 @@ FROM gcr.io/kaniko-project/executor:v1.6.0-debug as kaniko_binary
 
 FROM busybox:1.34.0
 
-RUN mkdir -p /kaniko/ssl/certs
+COPY assets/ /tmp/assets/
+
+RUN echo "[INFO] Create kaniko directory structure" && \
+        mkdir -p /kaniko/ssl/certs && \
+    echo "[INFO] Install update-docker-config.sh script" && \
+        mv /tmp/assets/update-docker-config.sh /kaniko
+
 
 COPY --from=kaniko_binary /kaniko/executor /kaniko
 COPY --from=kaniko_binary /kaniko/ssl/certs/* /kaniko/ssl/certs/
