@@ -13,14 +13,10 @@ logger = logging.getLogger(__name__)
 TEMPLATE_PIPELINE = '''
 ---
 default:
-  # image: docker:stable
-  image: registry.gitlab.com/ownport/docker-images/release/kaniko-builder:1.6-ubuntu
+  image: registry.gitlab.com/ownport/docker-images/release/kaniko:1.6-slim
 
 # variables:
 #   DOCKER_TLS_CERTDIR: "/certs"
-
-# services:
-# - docker:stable-dind
 
 stages:
 - {STAGES}
@@ -35,21 +31,14 @@ buildtools:
   - echo "[WARNING] to be added later"
 '''
 
-DOCKER_TARGET_TEMPLATE = '''
-{target_name}:
-  stage: {stage}
-  script:
-  - ./builder docker --build --target-path {target_path} --branch {branch}
-  - ./builder docker --test --target-path {target_path} --branch {branch}
-  - ./builder docker --publish --target-path {target_path} --branch {branch}
-'''
-
 KANIKO_TARGET_TEMPLATE = '''
 {target_name}:
   stage: {stage}
   script:
-  - ./builder kaniko --update-config
-  - ./builder kaniko --build --target-path {target_path} --branch {branch}
+  - |
+      /kaniko/update-docker-config.sh && \
+      cd {target_path} && \
+      /kaniko/executor --build-arg BRANCH={branch} --no-push 
 '''
 
 class GitLabYAMLGenerator:
