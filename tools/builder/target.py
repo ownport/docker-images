@@ -67,11 +67,35 @@ class Target(TargetBase):
         with open(self._target_path, 'r') as target_file:
             self._metadata = yaml_load(target_file)
 
+        self._metadata['stage'], self._metadata['target_name'] = self._path.split("/")[-2:]
+
+
     @property
     def info(self):
         ''' returns target metadata
         '''
         return self._metadata
+
+    @property
+    def image_uri(self, registry:str, branch:str) -> str:
+        ''' returns image uri based on registry and branch info
+        '''
+        if not registry or not branch:
+            logger.error(f'Missed registry or branch parameters, registry: {registry}, branch: {branch}')
+            return None
+
+        image_name = self._metadata.get("name")
+        if not image_name:
+            raise ValueError(f'No image name')
+
+        image_version = self._metadata.get("version")
+        if not image_version:
+            logger.warning('No image version, using `latest`')
+            image_version = 'latest'
+
+        image_uri = "/".join([registry, branch, image_name])
+        return ':'.join([image_uri, image_version])
+
 
     @staticmethod
     def root_path(filepath:Path) -> Path:

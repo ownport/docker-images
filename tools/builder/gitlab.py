@@ -1,6 +1,8 @@
 
 import logging
 
+from builder.target import Target
+
 from builder.git import RE_MASTER_BRANCH
 from builder.git import RE_DEVEL_BRANCH
 from builder.git import RE_BUGFIX_BRANCH
@@ -40,7 +42,8 @@ KANIKO_TARGET_TEMPLATE = '''
     /kaniko/executor \
       --context /builds/ownport/docker-images/{target_path} \
       --build-arg BRANCH={branch} \
-      --no-push 
+      --cache \
+      --destination {image_uri} 
 '''
 
 class GitLabYAMLGenerator:
@@ -69,11 +72,15 @@ class GitLabYAMLGenerator:
         ))
         for target_path in targets:
             try:
-                stage, target_name = str(target_path).split("/")[-2:]
-                target_name = ':'.join([stage, target_name])
-                print(KANIKO_TARGET_TEMPLATE.format(target_name=target_name, 
-                                                    stage=stage,
-                                                    branch=self._branch,
-                                                    target_path=target_path))
+                target = Target(target_path)
+                target_name = ':'.join([
+                                    target.info.get('stage'), 
+                                    target.info.get('target_name')])
+                print(
+                  KANIKO_TARGET_TEMPLATE.format(target_name=target_name, 
+                                                stage=target.info.get('stage'),
+                                                branch=self._branch,
+                                                target_path=target_path,
+                                                image_uri=target.image_uri))
             except:
-                logger.warning(f'Cannot detect stage and target name from target path, ${target_path}')
+                logger.warning(f'Cannot detect stage and target name from target path, {target_path}')
