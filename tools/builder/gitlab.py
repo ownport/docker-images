@@ -35,7 +35,8 @@ KANIKO_TARGET_TEMPLATE = '''
 {target_name}:
   stage: {stage}
   script:
-  - /kaniko/update-docker-config.sh && \
+  - mkdir -p /kaniko/.docker/ && \
+    /kaniko/update-docker-config.sh && \
     cd {target_path} && \
     /kaniko/executor --build-arg BRANCH={branch} --no-push 
 '''
