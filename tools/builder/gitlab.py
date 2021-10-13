@@ -34,7 +34,6 @@ KANIKO_TARGET_TEMPLATE = '''
     /kaniko/executor \
       --context /builds/ownport/docker-images/{target_path} \
       --build-arg BRANCH={branch} \
-      --cache \
       --destination {image_uri} 
 '''
 
