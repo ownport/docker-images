@@ -67,7 +67,7 @@ class Target(TargetBase):
         with open(self._target_path, 'r') as target_file:
             self._metadata = yaml_load(target_file)
 
-        self._metadata['stage'], self._metadata['target_name'] = self.path.split("/")[-2:]
+        self._metadata['stage'], self._metadata['target_name'] = str(self.path).split("/")[-2:]
 
 
     @property
