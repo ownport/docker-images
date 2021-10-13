@@ -16,15 +16,8 @@ TEMPLATE_PIPELINE = '''
 default:
   image: registry.gitlab.com/ownport/docker-images/release/kaniko:1.6-slim
 
-# variables:
-#   DOCKER_TLS_CERTDIR: "/certs"
-
 stages:
 - {STAGES}
-
-# before_script:
-# - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-# - apk add python3 git
 
 buildtools:
   stage: buildtools
@@ -64,21 +57,25 @@ class GitLabYAMLGenerator:
     def run(self, targets:list) -> None:
         ''' generate GitLab CI pipeline
         '''
+        registry = self._settings.get('registry', None)
+        if not registry:
+            logger.error('Missed regsitry parameter in builder gitlab configuration')
+            return
+
         print(TEMPLATE_PIPELINE.format(
                         STAGES='\n- '.join(
                                         self._settings.get('stages', [])
                         )
         ))
         for target in targets:
-            try:
-                target_name = ':'.join([
-                                    target.info.get('stage'), 
-                                    target.info.get('target_name')])
-                print(
-                  KANIKO_TARGET_TEMPLATE.format(target_name=target_name, 
-                                                stage=target.info.get('stage'),
-                                                branch=self._branch,
-                                                target_path=target.path,
-                                                image_uri=target.image_uri))
-            except:
-                logger.warning(f'Cannot detect stage and target name from target path, {target.path}')
+            target_name = ':'.join([
+                                target.info.get('stage'), 
+                                target.info.get('target_name')])
+            image_uri = target.get_image_uri(registry, self._branch)
+ 
+            print(
+              KANIKO_TARGET_TEMPLATE.format(target_name=target_name, 
+                                            stage=target.info.get('stage'),
+                                            branch=self._branch,
+                                            target_path=target.path,
+                                            image_uri=image_uri))

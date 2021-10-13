@@ -69,7 +69,6 @@ class Target(TargetBase):
 
         self._metadata['stage'], self._metadata['target_name'] = str(self.path).split("/")[-2:]
 
-
     @property
     def info(self):
         ''' returns target metadata
@@ -77,25 +76,32 @@ class Target(TargetBase):
         return self._metadata
 
     @property
-    def image_uri(self, registry:str, branch:str) -> str:
+    def name(self) -> str:
+        ''' return target name
+        '''
+        target_name = self._metadata.get('name', None)
+        if not target_name:
+            logger.error(f'Missed target name, target: {self.path}')
+        return target_name
+
+    @property
+    def version(self) -> str:
+        ''' return target version
+        '''
+        target_version = self._metadata.get('version', None)
+        if not target_version:
+            logger.error(f'Missed target version, target: {self.path}')
+        return target_version
+
+    def get_image_uri(self, registry:str, branch:str) -> str:
         ''' returns image uri based on registry and branch info
         '''
         if not registry or not branch:
             logger.error(f'Missed registry or branch parameters, registry: {registry}, branch: {branch}')
             return None
 
-        image_name = self._metadata.get("name")
-        if not image_name:
-            raise ValueError(f'No image name')
-
-        image_version = self._metadata.get("version")
-        if not image_version:
-            logger.warning('No image version, using `latest`')
-            image_version = 'latest'
-
-        image_uri = "/".join([registry, branch, image_name])
-        return ':'.join([image_uri, image_version])
-
+        image_uri = "/".join([registry, branch, self.name])
+        return ':'.join([image_uri, self.version])
 
     @staticmethod
     def root_path(filepath:Path) -> Path:
@@ -251,7 +257,7 @@ def handle_cli_commands(args):
 
         generator = GitLabYAMLGenerator(branch=git.branch_name, 
                                         tag=args.tag, 
-                                        settings=settings.get('gitlab', {}))
+                                        settings=settings.get('docker', {}))
         generator.run(changed_targets)
 
         if not changed_targets:
