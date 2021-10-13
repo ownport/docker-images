@@ -37,9 +37,10 @@ KANIKO_TARGET_TEMPLATE = '''
   script:
   - mkdir -p /kaniko/.docker/ && \
     /kaniko/update-docker-config.sh && \
-    ls -l && pwd && \
-    cd {target_path} && \
-    /kaniko/executor --build-arg BRANCH={branch} --no-push 
+    /kaniko/executor \
+      --context /builds/ownport/docker-images/{target_path} \
+      --build-arg BRANCH={branch} \
+      --no-push 
 '''
 
 class GitLabYAMLGenerator:
