@@ -35,10 +35,9 @@ KANIKO_TARGET_TEMPLATE = '''
 {target_name}:
   stage: {stage}
   script:
-  - |
-      /kaniko/update-docker-config.sh && \
-      cd {target_path} && \
-      /kaniko/executor --build-arg BRANCH={branch} --no-push 
+  - /kaniko/update-docker-config.sh && \
+    cd {target_path} && \
+    /kaniko/executor --build-arg BRANCH={branch} --no-push 
 '''
 
 class GitLabYAMLGenerator:
