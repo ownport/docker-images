@@ -14,7 +14,7 @@ from builder.settings import Settings
 logger = logging.getLogger(__name__)
 
 
-class DockerCommandException(Exception):
+class DockerImageCommandException(Exception):
     pass
 
 # Error codes
@@ -24,7 +24,7 @@ ERROR_REMOVE_DOCKER_IMAGE=1003
 ERROR_PUBLISH_DOCKER_IMAGE=1004
 
 
-class Docker:
+class DockerImage:
 
     def __init__(self, path:Path, branch:str, settings:dict={}) -> None:
 
@@ -64,7 +64,7 @@ class Docker:
         process =  subprocess.Popen(command, stdin=subprocess.PIPE, stdout=sys.stdout, stderr=sys.stderr)
         process.communicate()
         if process.returncode != 0:
-            raise DockerCommandException() 
+            raise DockerImageCommandException() 
 
     def build(self) -> None:
         ''' build docker image from target
@@ -76,7 +76,7 @@ class Docker:
         try:
             docker_command = ['pull', self._docker_image_uri]
             self._run_command(docker_command)
-        except DockerCommandException:
+        except DockerImageCommandException:
             logger.warning(f'Failed to pull docker image, {self._docker_image_uri}')
 
         # Build docker image
@@ -87,7 +87,7 @@ class Docker:
                                     '--cache-from', self._docker_image_uri,
                                     '--tag', self._docker_image_uri, '.']
                 self._run_command(docker_command)
-            except DockerCommandException:
+            except DockerImageCommandException:
                 logger.error(f'Failed to build docker image, image: {self._docker_image_uri}, tag: {self._docker_image_uri}')
                 sys.exit(ERROR_BUILD_DOCKER_IMAGE)
 
@@ -106,7 +106,7 @@ class Docker:
                                     self._docker_image_uri,
                                     "/tests/run-tests.sh"]
                 self._run_command(docker_command)
-            except DockerCommandException:
+            except DockerImageCommandException:
                 logger.error(f'Failed to test docker image, image: {self._docker_image_uri}')
                 sys.exit(ERROR_TEST_DOCKER_IMAGE)
 
@@ -118,7 +118,7 @@ class Docker:
 
         try:
             self._run_command(['image', 'rm', self._docker_image_uri])
-        except DockerCommandException:
+        except DockerImageCommandException:
             logger.error(f'Failed to remove docker image, image: {self._docker_image_uri}')
             sys.exit(ERROR_REMOVE_DOCKER_IMAGE)
 
@@ -132,7 +132,7 @@ class Docker:
         # Push docker image(-s) to GitLab Docker Registry
         try:
             self._run_command(["push", self._docker_image_uri])
-        except DockerCommandException:
+        except DockerImageCommandException:
             logger.error(f'Failed to publish docker image, image: {self._docker_image_uri}')
             sys.exit(ERROR_PUBLISH_DOCKER_IMAGE)
 
@@ -160,7 +160,7 @@ def handle_cli_commands(args):
     branch = args.branch
     settings = Settings(args.settings)
 
-    docker = Docker(path=target_path, branch=branch, settings=settings.get('docker', {}))
+    docker = DockerImage(path=target_path, branch=branch, settings=settings.get('docker', {}))
 
     if args.build:
         docker.build()
