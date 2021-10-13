@@ -257,7 +257,7 @@ def handle_cli_commands(args):
 
         generator = GitLabYAMLGenerator(branch=git.branch_name, 
                                         tag=args.tag, 
-                                        settings=settings.get('docker', {}))
+                                        settings=settings.get('gitlab', {}))
         generator.run(changed_targets)
 
         if not changed_targets:
