@@ -67,11 +67,41 @@ class Target(TargetBase):
         with open(self._target_path, 'r') as target_file:
             self._metadata = yaml_load(target_file)
 
+        self._metadata['stage'], self._metadata['target_name'] = str(self.path).split("/")[-2:]
+
     @property
     def info(self):
         ''' returns target metadata
         '''
         return self._metadata
+
+    @property
+    def name(self) -> str:
+        ''' return target name
+        '''
+        target_name = self._metadata.get('name', None)
+        if not target_name:
+            logger.error(f'Missed target name, target: {self.path}')
+        return target_name
+
+    @property
+    def version(self) -> str:
+        ''' return target version
+        '''
+        target_version = self._metadata.get('version', None)
+        if not target_version:
+            logger.error(f'Missed target version, target: {self.path}')
+        return target_version
+
+    def get_image_uri(self, registry:str, branch:str) -> str:
+        ''' returns image uri based on registry and branch info
+        '''
+        if not registry or not branch:
+            logger.error(f'Missed registry or branch parameters, registry: {registry}, branch: {branch}')
+            return None
+
+        image_uri = "/".join([registry, branch, self.name])
+        return ':'.join([image_uri, self.version])
 
     @staticmethod
     def root_path(filepath:Path) -> Path:
@@ -93,11 +123,6 @@ class TargetScanner(TargetBase):
         for target_file in self._path.glob("**/TARGET.yml"):
             target_path = target_file.relative_to(self._path).parent 
             yield target_path
-
-        # print('\nDepreacted targets:')
-        # for target_file in self._path.glob("**/metadata"):
-        #     target_path = target_file.relative_to(self._path).parent 
-        #     print(f"- {target_path}")
 
 
 class TargetDeps(Mapping):
@@ -228,6 +253,7 @@ def handle_cli_commands(args):
         changed_targets = list(set(changed_targets + \
                             list(flatten([deps.parents(target) for target in changed_targets])) + \
                             list(flatten([deps.children(target) for target in changed_targets]))))
+        changed_targets = [Target(path) for path in changed_targets]
 
         generator = GitLabYAMLGenerator(branch=git.branch_name, 
                                         tag=args.tag, 
