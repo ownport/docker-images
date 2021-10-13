@@ -1,7 +1,6 @@
 
 import logging
 
-from builder.target import Target
 
 from builder.git import RE_MASTER_BRANCH
 from builder.git import RE_DEVEL_BRANCH
@@ -70,9 +69,8 @@ class GitLabYAMLGenerator:
                                         self._settings.get('stages', [])
                         )
         ))
-        for target_path in targets:
+        for target in targets:
             try:
-                target = Target(target_path)
                 target_name = ':'.join([
                                     target.info.get('stage'), 
                                     target.info.get('target_name')])
@@ -80,7 +78,7 @@ class GitLabYAMLGenerator:
                   KANIKO_TARGET_TEMPLATE.format(target_name=target_name, 
                                                 stage=target.info.get('stage'),
                                                 branch=self._branch,
-                                                target_path=target_path,
+                                                target_path=target.path,
                                                 image_uri=target.image_uri))
             except:
-                logger.warning(f'Cannot detect stage and target name from target path, {target_path}')
+                logger.warning(f'Cannot detect stage and target name from target path, {target.path}')

@@ -247,6 +247,7 @@ def handle_cli_commands(args):
         changed_targets = list(set(changed_targets + \
                             list(flatten([deps.parents(target) for target in changed_targets])) + \
                             list(flatten([deps.children(target) for target in changed_targets]))))
+        changed_targets = [Target(path) for path in changed_targets]
 
         generator = GitLabYAMLGenerator(branch=git.branch_name, 
                                         tag=args.tag, 
