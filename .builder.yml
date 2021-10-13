@@ -4,6 +4,9 @@ docker:
   registry: registry.gitlab.com/ownport/docker-images
 
 gitlab:
+  # GitLab Docker Registry
+  registry: registry.gitlab.com/ownport/docker-images
+
   stages:
   - buildtools
   - base 

@@ -1,6 +1,7 @@
 
 import logging
 
+
 from builder.git import RE_MASTER_BRANCH
 from builder.git import RE_DEVEL_BRANCH
 from builder.git import RE_BUGFIX_BRANCH
@@ -10,23 +11,13 @@ from builder.git import RE_EXTRACT_BRANCH_AND_NUM
 logger = logging.getLogger(__name__)
 
 
-DOCKER_TEMPLATE_PIPELINE = '''
+TEMPLATE_PIPELINE = '''
 ---
 default:
-  image: docker:stable
-
-variables:
-  DOCKER_TLS_CERTDIR: "/certs"
-
-services:
-- docker:stable-dind
+  image: registry.gitlab.com/ownport/docker-images/release/kaniko:1.6-slim
 
 stages:
 - {STAGES}
-
-before_script:
-- docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-- apk add python3 git
 
 buildtools:
   stage: buildtools
@@ -34,13 +25,16 @@ buildtools:
   - echo "[WARNING] to be added later"
 '''
 
-DOCKER_TARGET_TEMPLATE = '''
+KANIKO_TARGET_TEMPLATE = '''
 {target_name}:
   stage: {stage}
   script:
-  - ./builder docker --build --target-path {target_path} --branch {branch}
-  - ./builder docker --test --target-path {target_path} --branch {branch}
-  - ./builder docker --publish --target-path {target_path} --branch {branch}
+  - mkdir -p /kaniko/.docker/ && \
+    /kaniko/update-docker-config.sh && \
+    /kaniko/executor \
+      --context /builds/ownport/docker-images/{target_path} \
+      --build-arg BRANCH={branch} \
+      --destination {image_uri} 
 '''
 
 class GitLabYAMLGenerator:
@@ -62,18 +56,25 @@ class GitLabYAMLGenerator:
     def run(self, targets:list) -> None:
         ''' generate GitLab CI pipeline
         '''
-        print(DOCKER_TEMPLATE_PIPELINE.format(
+        registry = self._settings.get('registry', None)
+        if not registry:
+            logger.error('Missed regsitry parameter in builder gitlab configuration')
+            return
+
+        print(TEMPLATE_PIPELINE.format(
                         STAGES='\n- '.join(
                                         self._settings.get('stages', [])
                         )
         ))
-        for target_path in targets:
-            try:
-                stage, target_name = str(target_path).split("/")[-2:]
-                target_name = ':'.join([stage, target_name])
-                print(DOCKER_TARGET_TEMPLATE.format(target_name=target_name, 
-                                                    stage=stage,
-                                                    branch=self._branch,
-                                                    target_path=target_path))
-            except:
-                logger.warning(f'Cannot detect stage and target name from target path, ${target_path}')
+        for target in targets:
+            target_name = ':'.join([
+                                target.info.get('stage'), 
+                                target.info.get('target_name')])
+            image_uri = target.get_image_uri(registry, self._branch)
+ 
+            print(
+              KANIKO_TARGET_TEMPLATE.format(target_name=target_name, 
+                                            stage=target.info.get('stage'),
+                                            branch=self._branch,
+                                            target_path=target.path,
+                                            image_uri=image_uri))
