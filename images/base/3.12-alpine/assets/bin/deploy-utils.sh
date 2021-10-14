@@ -32,7 +32,7 @@ EOM
             apk update
         ;;
     install)
-        shift
+        shift            
         echo "[INFO] Installing the packages: $@" && \
             apk add --no-cache $@
         ;;

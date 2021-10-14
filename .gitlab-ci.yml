@@ -1,4 +1,5 @@
 default:
+<<<<<<< HEAD
   # image: docker:stable
   # image: registry.gitlab.com/ownport/docker-images/release/kaniko-builder:1.6-ubuntu
   image: registry.gitlab.com/ownport/docker-images/release/python-dev:3.9-alpine
@@ -11,14 +12,20 @@ default:
 
 # include:
 #   - template: Container-Scanning.gitlab-ci.yml
+=======
+  image: registry.gitlab.com/ownport/docker-images/release/python-dev:3.9-alpine
+>>>>>>> origin-devel
 
 stages:
 - prepare
 - changed targets
+<<<<<<< HEAD
 
 # before_script:
 # - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 # - apk add python3 git
+=======
+>>>>>>> origin-devel
 
 targets list:
   stage: prepare
