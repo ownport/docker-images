@@ -2,6 +2,9 @@
 
 set -eu
 
+echo "[INFO] Install py3-utils script" && \
+    mv /tmp/assets/bin/py3-utils.sh /usr/local/bin/ && \
+    
 # Preparation
 deploy-utils.sh update
 
