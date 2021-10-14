@@ -1,5 +1,5 @@
 ---
-type: docker_image
+type: docker-image
 name: python
 version: 3.8-ubuntu
 parameters:
