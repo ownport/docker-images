@@ -19,6 +19,9 @@ deploy-utils.sh add-user-and-group \
     ${GROUP_ID} ${GROUP_NAME} \
     /bin/zsh
 
+echo "[INFO] Running smoke tests" && \
+    /tmp/assets/tests/smoke-tests.sh
+
 # Cleanup procedure
 deploy-utils.sh cleanup
 py3-utils.sh cleanup
