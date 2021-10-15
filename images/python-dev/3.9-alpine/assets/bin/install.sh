@@ -41,6 +41,9 @@ else
     echo "[WARNING] Missing the directory: /tmp/assets/bin/dev/"
 fi
 
+echo "[INFO] Running smoke tests" && \
+    /tmp/assets/tests/smoke-tests.sh
+
 # Cleanup procedure
 deploy-utils.sh cleanup
 py3-utils.sh cleanup
