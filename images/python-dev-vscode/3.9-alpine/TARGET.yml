@@ -1,8 +1,8 @@
 ---
 type: docker-image
-name: python-dev
+name: python-dev-vscode
 version: 3.9-alpine
 parameters:
   shell: zsh
 depends:
-- images/python/3.9-alpine
+- images/python-dev/3.9-alpine
