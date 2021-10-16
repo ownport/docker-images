@@ -1,0 +1,8 @@
+---
+type: docker-image
+name: docker-tools
+version: 1.0-alpine
+parameters:
+  shell: sh
+depends:
+- images/base/3.14-alpine
