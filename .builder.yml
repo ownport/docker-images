@@ -28,6 +28,7 @@ gitlab:
   - scraping
 
   # tools
+  - tools
   - bazel
   - bazel-dind
   - kaniko
