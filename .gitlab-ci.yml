@@ -38,6 +38,7 @@ container_registry_cleanup:
   stage: scheduled
   script:
   - echo "Scheduled Container Registy Cleanup"
+  - reg -help
   only:
     refs:
     - schedules
