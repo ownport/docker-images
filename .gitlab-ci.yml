@@ -34,6 +34,7 @@ trigger targets builds:
     - schedules
     
 container_registry_cleanup:
+  image: registry.gitlab.com/ownport/docker-images/pre-release/docker-tools:1.0-alpine
   stage: scheduled
   script:
   - echo "Scheduled Container Registy Cleanup"
