@@ -4,6 +4,7 @@ default:
 stages:
 - prepare
 - changed targets
+- scheduled
 
 targets list:
   stage: prepare
@@ -15,6 +16,9 @@ targets list:
   artifacts:
     paths:
     - changed-targets.yaml
+  except:
+    refs:
+    - schedules
 
 trigger targets builds:
   stage: changed targets
@@ -25,5 +29,16 @@ trigger targets builds:
     - artifact: changed-targets.yaml
       job: targets list
     strategy: depend
+  except:
+    refs:
+    - schedules
     
-
+container_registry_cleanup:
+  stage: scheduled
+  script:
+  - echo "Scheduled Container Registy Cleanup"
+  only:
+    refs:
+    - schedules
+    variables:
+    - $SCHEDULE_TYPE == "container_registry_cleanup"
