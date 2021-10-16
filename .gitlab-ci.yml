@@ -41,4 +41,4 @@ container_registry_cleanup:
     refs:
     - schedules
     variables:
-    - $SCHEDULE_TYPE == "container_registry_cleanup"
+    - $SCHEDULED_JOB == "container_registry_cleanup"
