@@ -19,10 +19,12 @@ default:
 stages:
 - {STAGES}
 
+
 buildtools:
   stage: buildtools
   script:
   - echo "[WARNING] to be added later"
+
 '''
 
 KANIKO_TARGET_TEMPLATE = '''
@@ -35,6 +37,7 @@ KANIKO_TARGET_TEMPLATE = '''
       --context /builds/ownport/docker-images/{target_path} \
       --build-arg BRANCH={branch} \
       --destination {image_uri} 
+
 '''
 
 class GitLabYAMLGenerator:
