@@ -37,11 +37,10 @@ container_registry_cleanup:
   image: registry.gitlab.com/ownport/docker-images/pre-release/docker-tools:1.0-alpine
   stage: scheduled
   script:
-  - reg \
+  - reg ls \
       --auth-url $CI_REGISTRY \
       -u $CI_REGISTRY_USER \
-      -p $CI_REGISTRY_PASSWORD \
-      ls
+      -p $CI_REGISTRY_PASSWORD
   only:
     refs:
     - schedules
