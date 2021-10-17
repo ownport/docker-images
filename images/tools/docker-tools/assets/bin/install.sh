@@ -14,8 +14,8 @@ get_reg() {
 	chmod a+x /usr/local/bin/reg
 }
 
-echo "[INFO] Installing build dependencies" && \
-    deploy-utils.sh install-build-deps "curl"
+echo "[INFO] Installing console tools" && \
+    deploy-utils.sh install "curl jq"
 
 echo "[INFO] Installing Docker registry v2 command line client" && \
     get_reg
