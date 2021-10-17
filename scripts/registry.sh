@@ -12,7 +12,7 @@ list_repos() {
 
     curl --silent --header "PRIVATE-TOKEN: ${CU_JOB_TOKEN}" \
         ${URL_REPO_LIST} | \
-    jq -c ".[] | select(.name | contains('${GROUP_NAME}'))"
+    jq -c ".[] | select(.name | contains(\"${GROUP_NAME}\"))"
 }
 
 delete_repo() {
