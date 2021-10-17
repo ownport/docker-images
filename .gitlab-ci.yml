@@ -37,7 +37,7 @@ container_registry_cleanup:
   image: registry.gitlab.com/ownport/docker-images/pre-release/docker-tools:1.0-alpine
   stage: scheduled
   script:
-  - scripts/registry.sh list_repos
+  - scripts/registry.sh list_projects
   only:
     refs:
     - schedules
