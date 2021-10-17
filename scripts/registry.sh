@@ -8,8 +8,17 @@ URL_REPO_LIST="https://gitlab.com/api/v4/projects/${GITLAB_PROJECT_ID}/registry/
 
 list_repos() {
 
+    GROUP_NAME=${1:-}
+
     curl --silent --header "PRIVATE-TOKEN: ${CU_JOB_TOKEN}" \
-        ${URL_REPO_LIST}
+        ${URL_REPO_LIST} | \
+    jq -c .[]
+}
+
+delete_repo() {
+
+    REPO_ID=${1:-}
+    echo "[INFO] Deleting the repo, id: ${REPO_ID}"
 }
 
 $@
