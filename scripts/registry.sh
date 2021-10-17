@@ -1,6 +1,6 @@
 #!/bin/sh
 
-GITLAB_PROJECT="docker-images"
+GITLAB_PROJECT="ownport/docker-images"
 
 URL_REPO_LIST="https://gitlab.com/api/v4/projects/${GITLAB_PROJECT}/registry/repositories"
 
