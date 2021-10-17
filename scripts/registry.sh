@@ -6,7 +6,7 @@ URL_REPO_LIST="https://gitlab.example.com/api/v4/projects/${GITLAB_PROJECT}/regi
 
 list_repos() {
 
-    curl --header "PRIVATE-TOKEN: ${CU_JOB_TOKEN} ${URL_REPO_LIST}" 
+    curl --header "PRIVATE-TOKEN: ${CU_JOB_TOKEN}" ${URL_REPO_LIST}
 
 }
 
