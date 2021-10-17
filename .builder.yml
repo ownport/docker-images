@@ -10,6 +10,7 @@ gitlab:
   stages:
   - buildtools
   - base 
+  - shell
 
   # python
   - python
