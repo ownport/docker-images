@@ -10,7 +10,7 @@ list_repos() {
 
     GROUP_NAME=${1:-}
 
-    curl --silent --header "PRIVATE-TOKEN: ${CI_REGISTRY_PASSWORD}" \
+    curl --silent --header "PRIVATE-TOKEN: ${CI_JOB_TOKEN}" \
         ${URL_REPO_LIST} | \
     jq . 
     # -c ".[] | select(.name | contains(\"${GROUP_NAME}\"))"
