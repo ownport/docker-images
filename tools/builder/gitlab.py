@@ -56,6 +56,23 @@ class GitLabYAMLGenerator:
         elif RE_FEATURE_BRANCH.match(branch) or RE_BUGFIX_BRANCH.match(branch):
             self._branch = '-'.join(RE_EXTRACT_BRANCH_AND_NUM.search(branch).groups())
 
+
+    def get_image_uri(self, registry:str, image_name:str, version:str) -> str:
+        ''' returns image uri based on registry, image name and version
+        '''
+        if not registry:
+            logger.error(f'Missed registry parameter, registry: {registry}')
+            return None
+        
+        if not image_name:
+            logger.error(f'Missed image name parameters, image_name: {image_name}')
+            return None
+
+        image_uri = "/".join([registry, self.name])
+        image_version = '-'.join([version, self._branch])
+
+        return ":".join([image_uri, image_version])
+
     def run(self, targets:list) -> None:
         ''' generate GitLab CI pipeline
         '''
@@ -73,7 +90,7 @@ class GitLabYAMLGenerator:
             target_name = ':'.join([
                                 target.info.get('stage'), 
                                 target.info.get('target_name')])
-            image_uri = target.get_image_uri(registry, self._branch)
+            image_uri = self.get_image_uri(registry, target.name, target.version)
  
             print(
               KANIKO_TARGET_TEMPLATE.format(target_name=target_name, 
