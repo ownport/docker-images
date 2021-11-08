@@ -68,7 +68,7 @@ class GitLabYAMLGenerator:
             logger.error(f'Missed image name parameters, image_name: {image_name}')
             return None
 
-        image_uri = "/".join([registry, self.name])
+        image_uri = "/".join([registry, image_name])
         image_version = '-'.join([version, self._branch])
 
         return ":".join([image_uri, image_version])
