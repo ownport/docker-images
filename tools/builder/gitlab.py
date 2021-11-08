@@ -14,7 +14,8 @@ logger = logging.getLogger(__name__)
 TEMPLATE_PIPELINE = '''
 ---
 default:
-  image: registry.gitlab.com/ownport/docker-images/release/kaniko:1.6-slim
+  image: gcr.io/kaniko-project/executor:debug
+  # image: registry.gitlab.com/ownport/docker-images/release/kaniko:1.6-slim
 
 stages:
 - {STAGES}
