@@ -6,3 +6,4 @@
 - add removing /var/cache as part cleaning
 - add install packages from edge repo
 - add docker registry branch support
+- brach as part of tag
