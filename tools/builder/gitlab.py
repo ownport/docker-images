@@ -8,6 +8,8 @@ from builder.git import RE_BUGFIX_BRANCH
 from builder.git import RE_FEATURE_BRANCH
 from builder.git import RE_EXTRACT_BRANCH_AND_NUM
 
+from jinja2 import Environment, BaseLoader, select_autoescape
+
 logger = logging.getLogger(__name__)
 
 
@@ -29,8 +31,8 @@ buildtools:
 '''
 
 KANIKO_TARGET_TEMPLATE = '''
-{target_name}:
-  stage: {stage}
+{{ target_name }}:
+  stage: {{ stage }}
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
@@ -39,10 +41,11 @@ KANIKO_TARGET_TEMPLATE = '''
   - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
   - >-
     /kaniko/executor \
-    --context /builds/ownport/docker-images/{target_path} \
-    --dockerfile /builds/ownport/docker-images/{target_path}/Dockerfile \
-    --build-arg BRANCH={branch} \
-    --destination {image_uri}
+    --context /builds/ownport/docker-images/{{ target_path }} \
+    --dockerfile /builds/ownport/docker-images/{{ target_path }}/Dockerfile \
+    --build-arg BRANCH={{ branch }} \
+    --destination {{ image_uri }}
+'''
 
 #   - mkdir -p /kaniko/.docker/ && \
 #     /kaniko/update-docker-config.sh && \
@@ -50,7 +53,6 @@ KANIKO_TARGET_TEMPLATE = '''
 #       --context /builds/ownport/docker-images/{target_path} \
 #       --build-arg BRANCH={branch} \
 #       --destination {image_uri} 
-'''
 
 class GitLabYAMLGenerator:
 
@@ -93,6 +95,11 @@ class GitLabYAMLGenerator:
             logger.error('Missed regsitry parameter in builder gitlab configuration')
             return
 
+        kaniko_template = Environment(
+                            loader=BaseLoader(), autoescape=select_autoescape()
+                        ).from_string(KANIKO_TARGET_TEMPLATE)
+
+
         print(TEMPLATE_PIPELINE.format(
                         STAGES='\n- '.join(
                                         self._settings.get('stages', [])
@@ -104,9 +111,10 @@ class GitLabYAMLGenerator:
                                 target.info.get('target_name')])
             image_uri = self.get_image_uri(registry, target.name, target.version)
  
+
             print(
-              KANIKO_TARGET_TEMPLATE.format(target_name=target_name, 
-                                            stage=target.info.get('stage'),
-                                            branch=self._branch,
-                                            target_path=target.path,
-                                            image_uri=image_uri))
+                kaniko_template.render(target_name=target_name, 
+                                        stage=target.info.get('stage'),
+                                        branch=self._branch,
+                                        target_path=target.path,
+                                        image_uri=image_uri))
