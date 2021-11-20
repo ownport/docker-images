@@ -8,7 +8,7 @@ from builder.git import RE_BUGFIX_BRANCH
 from builder.git import RE_FEATURE_BRANCH
 from builder.git import RE_EXTRACT_BRANCH_AND_NUM
 
-from jinja2 import Environment, BaseLoader, select_autoescape
+from builder.libs.jinja2 import Environment, BaseLoader, select_autoescape
 
 logger = logging.getLogger(__name__)
 
