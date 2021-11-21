@@ -11,6 +11,9 @@ gitlab:
   - buildtools
   - base 
 
+  - kaniko
+  - kaniko-builder
+
   # python
   - python
   - python-dev
@@ -31,5 +34,3 @@ gitlab:
   - tools
   - bazel
   - bazel-dind
-  - kaniko
-  - kaniko-builder
