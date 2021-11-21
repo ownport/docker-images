@@ -9,6 +9,7 @@ stages:
 targets list:
   stage: prepare
   script:
+  - pip3 install jinja2
   - ./builder git --branch origin/$CI_COMMIT_REF_NAME --tag $CI_COMMIT_TAG --fetch-target-branch
   - ./builder git --branch origin/$CI_COMMIT_REF_NAME --tag $CI_COMMIT_TAG --show-changed-files
   - ./builder target --branch origin/$CI_COMMIT_REF_NAME --tag $CI_COMMIT_TAG --generate-pipeline > changed-targets.yaml
