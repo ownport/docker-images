@@ -32,7 +32,7 @@ KANIKO_TARGET_TEMPLATE = '''
     entrypoint: [""]
   script:
   - mkdir -p /kaniko/.docker
-  - echo "{\\\"auths\\\":{\\\"${CI_REGISTRY}\\\":{\\\"auth\\\":\\\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\\\n')\\\"}}}" > /kaniko/.docker/config.json
+  - echo "{\\\"auths\\\":{\\\"${CI_REGISTRY}\\\":{\\\"auth\\\":\\\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\\n')\\\"}}}" > /kaniko/.docker/config.json
   - /kaniko/executor \
     --context /builds/ownport/docker-images/{{ target_path }} \
     --dockerfile /builds/ownport/docker-images/{{ target_path }}/Dockerfile \
