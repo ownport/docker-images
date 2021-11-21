@@ -15,19 +15,13 @@ logger = logging.getLogger(__name__)
 
 TEMPLATE_PIPELINE = '''
 ---
-default:
-  image: gcr.io/kaniko-project/executor:debug
-  # image: registry.gitlab.com/ownport/docker-images/release/kaniko:1.6-slim
-
 stages:
 - {STAGES}
-
 
 buildtools:
   stage: buildtools
   script:
   - echo "[WARNING] to be added later"
-
 '''
 
 KANIKO_TARGET_TEMPLATE = '''
@@ -38,7 +32,7 @@ KANIKO_TARGET_TEMPLATE = '''
     entrypoint: [""]
   script:
   - mkdir -p /kaniko/.docker
-  - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+  - echo "{\\\"auths\\\":{\\\"${CI_REGISTRY}\\\":{\\\"auth\\\":\\\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\\\n')\\\"}}}" > /kaniko/.docker/config.json
   - >-
     /kaniko/executor \
     --context /builds/ownport/docker-images/{{ target_path }} \
@@ -46,6 +40,10 @@ KANIKO_TARGET_TEMPLATE = '''
     --build-arg BRANCH={{ branch }} \
     --destination {{ image_uri }}
 '''
+
+# default:
+#   image: gcr.io/kaniko-project/executor:debug
+#   # image: registry.gitlab.com/ownport/docker-images/release/kaniko:1.6-slim
 
 #   - mkdir -p /kaniko/.docker/ && \
 #     /kaniko/update-docker-config.sh && \
