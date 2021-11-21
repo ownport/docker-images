@@ -59,14 +59,15 @@ class GitLabYAMLGenerator:
         self._tag = tag
         self._settings = settings
 
+        self._branch = '-'
         if RE_DEVEL_BRANCH.match(branch):
-            self._branch = 'devel'
+            self._branch += 'devel'
         elif RE_MASTER_BRANCH.match(branch):
-            self._branch = 'pre-release'
+            self._branch += 'prerelease'
         elif self._tag and self._tag.startswith('release/'):
-            self._branch = 'release'
+            self._branch = ''
         elif RE_FEATURE_BRANCH.match(branch) or RE_BUGFIX_BRANCH.match(branch):
-            self._branch = '-'.join(RE_EXTRACT_BRANCH_AND_NUM.search(branch).groups())
+            self._branch += '-'.join(RE_EXTRACT_BRANCH_AND_NUM.search(branch).groups())
 
 
     def get_image_uri(self, registry:str, image_name:str, version:str) -> str:

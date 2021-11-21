@@ -1,5 +1,5 @@
 ARG BRANCH=${BRANCH}
-FROM registry.gitlab.com/ownport/docker-images/${BRANCH}/base:21.04-ubuntu
+FROM registry.gitlab.com/ownport/docker-images/base:21.04-ubuntu${BRANCH}
 
 COPY assets/ /tmp/assets/
 

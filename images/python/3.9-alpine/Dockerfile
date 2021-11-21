@@ -1,5 +1,5 @@
 ARG BRANCH=${BRANCH}
-FROM registry.gitlab.com/ownport/docker-images/${BRANCH}/base:3.14-alpine
+FROM registry.gitlab.com/ownport/docker-images/base:3.14-alpine${BRANCH}
 
 COPY assets/ /tmp/assets/
 
