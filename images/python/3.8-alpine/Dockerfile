@@ -1,5 +1,5 @@
-ARG BRANCH=${BRANCH}
-FROM registry.gitlab.com/ownport/docker-images/base:3.13-alpine${BRANCH}
+ARG TAG_SUFFIX=${TAG_SUFFIX}
+FROM registry.gitlab.com/ownport/docker-images/base:3.13-alpine${TAG_SUFFIX}
 
 COPY assets/ /tmp/assets/
 

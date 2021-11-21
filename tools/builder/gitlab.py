@@ -36,7 +36,7 @@ KANIKO_TARGET_TEMPLATE = '''
   - /kaniko/executor \
     --context /builds/ownport/docker-images/{{ target_path }} \
     --dockerfile /builds/ownport/docker-images/{{ target_path }}/Dockerfile \
-    --build-arg BRANCH={{ branch }} \
+    --build-arg TAG_SUFFIX={{ tag_suffix }} \
     --destination {{ image_uri }}
 
 '''
@@ -59,15 +59,15 @@ class GitLabYAMLGenerator:
         self._tag = tag
         self._settings = settings
 
-        self._branch = '-'
+        self._tag_suffix = '-'
         if RE_DEVEL_BRANCH.match(branch):
-            self._branch += 'devel'
+            self._tag_suffix += 'devel'
         elif RE_MASTER_BRANCH.match(branch):
-            self._branch += 'prerelease'
-        elif self._tag and self._tag.startswith('release/'):
-            self._branch = ''
+            self._tag_suffix += 'pre-release'
         elif RE_FEATURE_BRANCH.match(branch) or RE_BUGFIX_BRANCH.match(branch):
-            self._branch += '-'.join(RE_EXTRACT_BRANCH_AND_NUM.search(branch).groups())
+            self._tag_suffix += '-'.join(RE_EXTRACT_BRANCH_AND_NUM.search(branch).groups())
+        elif self._tag and self._tag.startswith('release/'):
+            self._tag_suffix = ''
 
 
     def get_image_uri(self, registry:str, image_name:str, version:str) -> str:
@@ -82,7 +82,7 @@ class GitLabYAMLGenerator:
             return None
 
         image_uri = "/".join([registry, image_name])
-        image_version = '-'.join([version, self._branch])
+        image_version = ''.join([version, self._tag_suffix])
 
         return ":".join([image_uri, image_version])
 
@@ -114,6 +114,6 @@ class GitLabYAMLGenerator:
             print(
                 kaniko_template.render(target_name=target_name, 
                                         stage=target.info.get('stage'),
-                                        branch=self._branch,
+                                        tag_suffix=self._tag_suffix,
                                         target_path=target.path,
                                         image_uri=image_uri))
