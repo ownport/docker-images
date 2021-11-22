@@ -19,18 +19,18 @@ gitlab:
   - python-dev
   - python-dev-vscode
 
-  - openjdk
-  - sbt
-  - scala
+  # - openjdk
+  # - sbt
+  # - scala
 
-  - nodejs
-  - rust
-  - bigdata
-  - data-science
-  - workflows
-  - scraping
+  # - nodejs
+  # - rust
+  # - bigdata
+  # - data-science
+  # - workflows
+  # - scraping
 
   # tools
-  - tools
-  - bazel
-  - bazel-dind
+  # - tools
+  # - bazel
+  # - bazel-dind
