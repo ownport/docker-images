@@ -105,6 +105,11 @@ class GitLabYAMLGenerator:
                         )
         ))
         for target in targets:
+            
+            # skip target if no definiton in settings file
+            if not target.info.get('stage') in self._settings.get('stages', []):
+                continue
+
             target_name = ':'.join([
                                 target.info.get('stage'), 
                                 target.info.get('target_name')])
