@@ -16,9 +16,9 @@ gitlab:
   - kaniko-builder
 
   # python
-  - python
-  - python-dev
-  - python-dev-vscode
+  #- python
+  #- python-dev
+  #- python-dev-vscode
 
   # - openjdk
   # - sbt
