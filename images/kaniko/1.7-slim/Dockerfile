@@ -2,7 +2,7 @@ ARG TAG_SUFFIX=${TAG_SUFFIX}
 
 FROM gcr.io/kaniko-project/executor:v1.7.0-debug as kaniko_binary
 
-FROM busybox:1.34.0
+FROM busybox:1.34.1
 
 COPY assets/ /tmp/assets/
 
