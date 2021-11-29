@@ -2,7 +2,7 @@
 import logging
 from pathlib import Path
 
-from builder.libs.yaml import safe_load as yaml_load
+from yaml import safe_load as yaml_load
 
 logger = logging.getLogger(__name__) 
 

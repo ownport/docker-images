@@ -1,5 +1,5 @@
-ARG BRANCH=${BRANCH}
-FROM registry.gitlab.com/ownport/docker-images/${BRANCH}/base:20.04-ubuntu
+ARG TAG_SUFFIX=${TAG_SUFFIX}
+FROM registry.gitlab.com/ownport/docker-images/base:20.04-ubuntu${TAG_SUFFIX}
 
 COPY assets/ /tmp/assets/
 
