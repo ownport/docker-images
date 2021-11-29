@@ -4,10 +4,12 @@ default:
 stages:
 - prepare
 - changed targets
+- scheduled
 
 targets list:
   stage: prepare
   script:
+  - pip3 install jinja2 PyYAML
   - ./builder git --branch origin/$CI_COMMIT_REF_NAME --tag $CI_COMMIT_TAG --fetch-target-branch
   - ./builder git --branch origin/$CI_COMMIT_REF_NAME --tag $CI_COMMIT_TAG --show-changed-files
   - ./builder target --branch origin/$CI_COMMIT_REF_NAME --tag $CI_COMMIT_TAG --generate-pipeline > changed-targets.yaml
@@ -15,6 +17,9 @@ targets list:
   artifacts:
     paths:
     - changed-targets.yaml
+  except:
+    refs:
+    - schedules
 
 trigger targets builds:
   stage: changed targets
@@ -25,5 +30,17 @@ trigger targets builds:
     - artifact: changed-targets.yaml
       job: targets list
     strategy: depend
+  except:
+    refs:
+    - schedules
     
-
+container_registry_cleanup:
+  image: registry.gitlab.com/ownport/docker-images/pre-release/docker-tools:1.0-alpine
+  stage: scheduled
+  script:
+  - scripts/registry.sh list_repos feature
+  only:
+    refs:
+    - schedules
+    variables:
+    - $SCHEDULED_JOB == "container_registry_cleanup"

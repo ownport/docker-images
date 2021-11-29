@@ -4,3 +4,4 @@
 
 - base image, based on Alpine 3.13
 - add docker registry branch support
+- brach as part of tag

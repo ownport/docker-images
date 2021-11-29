@@ -9,6 +9,7 @@ from argparse import ArgumentParser
 from collections import defaultdict
 
 from itertools import chain
+from yaml import safe_load as yaml_load
 
 flatten = chain.from_iterable
 
@@ -20,9 +21,7 @@ except ImportError:
 
 from builder.git import Git
 from builder.gitlab import GitLabYAMLGenerator
-
 from builder.settings import Settings
-from builder.libs.yaml import safe_load as yaml_load
 
 
 logger = logging.getLogger(__name__)

@@ -215,9 +215,8 @@ class Git:
     def _check_output(self, args, failure_msg=None, errors="strict"):
 
         cmd = self._create_git_cmdline(args)
-        logger.debug(f"Executing: {' '.join(cmd)}")
-        process, out = Command.invoke(cmd)
-        Command.check_result(cmd, process.returncode, failure_msg)
+        process, out, err = Command.invoke(cmd)
+        Command.check_result(cmd, process.returncode, err, failure_msg)
         return Command.cleanse(out, errors=errors)
 
 
