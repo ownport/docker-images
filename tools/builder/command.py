@@ -28,15 +28,15 @@ class Command:
             # Binary DNE or is not executable
             cmd_str = " ".join(cmd)
             raise CommandException(f"Failed to execute command {cmd_str}: {e!r}")
-        out, _ = process.communicate()
-        return process, out
+        out, err = process.communicate()
+        return process, out, err
 
     @classmethod
     def cleanse(cls, output, errors="strict"):
         return output.strip().decode("utf-8", errors=errors)
 
     @classmethod
-    def check_result(cls, cmd, result, failure_msg=None):
-        if result != 0:
+    def check_result(cls, cmd, result_code, err, failure_msg=None):
+        if result_code != 0:
             cmd_str = " ".join(cmd)
-            raise CommandException(failure_msg or f"{cmd_str} failed with exit code {result}")
+            raise CommandException(failure_msg or f"{cmd_str} failed with exit code {result_code}, error: {err}")
