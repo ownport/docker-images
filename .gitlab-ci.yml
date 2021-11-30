@@ -1,5 +1,5 @@
 default:
-  image: registry.gitlab.com/ownport/docker-images/release/python-dev:3.9-alpine
+  image: registry.gitlab.com/ownport/docker-images/python-dev:3.9-alpine
 
 stages:
 - prepare
@@ -33,14 +33,3 @@ trigger targets builds:
   except:
     refs:
     - schedules
-    
-container_registry_cleanup:
-  image: registry.gitlab.com/ownport/docker-images/pre-release/docker-tools:1.0-alpine
-  stage: scheduled
-  script:
-  - scripts/registry.sh list_repos feature
-  only:
-    refs:
-    - schedules
-    variables:
-    - $SCHEDULED_JOB == "container_registry_cleanup"
