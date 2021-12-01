@@ -29,7 +29,6 @@ KANIKO_TARGET_TEMPLATE = '''
   stage: {{ stage }}
   image:
     name: registry.gitlab.com/ownport/docker-images/kaniko:1.7-slim
-    entrypoint: [""]
   script:
   - /kaniko/update-docker-config.sh && \
     /kaniko/executor \
@@ -37,13 +36,6 @@ KANIKO_TARGET_TEMPLATE = '''
         --build-arg TAG_SUFFIX={{ tag_suffix }} \
         --destination {{ image_uri }}
 '''
-
-#   - mkdir -p /kaniko/.docker/ && \
-#     /kaniko/update-docker-config.sh && \
-#     /kaniko/executor \
-#       --context /builds/ownport/docker-images/{target_path} \
-#       --build-arg BRANCH={branch} \
-#       --destination {image_uri} 
 
 #   image:
 #     name: gcr.io/kaniko-project/executor:debug
