@@ -2,7 +2,7 @@ ARG TAG_SUFFIX=${TAG_SUFFIX}
 
 FROM gcr.io/kaniko-project/executor:v1.6.0-debug as kaniko_binary
 
-FROM busybox:1.34.0
+FROM busybox:1.34.1
 
 COPY assets/ /tmp/assets/
 
@@ -18,3 +18,5 @@ COPY --from=kaniko_binary /etc/nsswitch.conf /etc/nsswitch.conf
 
 ENV SSL_CERT_DIR=/kaniko/ssl/certs
 ENV DOCKER_CONFIG /kaniko/.docker/
+
+RUN /tmp/assets/tests/smoke-tests.sh
