@@ -28,22 +28,15 @@ KANIKO_TARGET_TEMPLATE = '''
 {{ target_name }}:
   stage: {{ stage }}
   image:
-    name: gcr.io/kaniko-project/executor:debug
+    name: registry.gitlab.com/ownport/docker-images/kaniko:1.7-slim
     entrypoint: [""]
   script:
-  - mkdir -p /kaniko/.docker
-  - echo "{\\\"auths\\\":{\\\"${CI_REGISTRY}\\\":{\\\"auth\\\":\\\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\\n')\\\"}}}" > /kaniko/.docker/config.json
-  - /kaniko/executor \
-    --context /builds/ownport/docker-images/{{ target_path }} \
-    --dockerfile /builds/ownport/docker-images/{{ target_path }}/Dockerfile \
-    --build-arg TAG_SUFFIX={{ tag_suffix }} \
-    --destination {{ image_uri }}
-
+  - /kaniko/update-docker-config.sh && \
+    /kaniko/executor \
+        --context /builds/ownport/docker-images/{{ target_path }} \
+        --build-arg TAG_SUFFIX={{ tag_suffix }} \
+        --destination {{ image_uri }}
 '''
-
-# default:
-#   image: gcr.io/kaniko-project/executor:debug
-#   # image: registry.gitlab.com/ownport/docker-images/release/kaniko:1.6-slim
 
 #   - mkdir -p /kaniko/.docker/ && \
 #     /kaniko/update-docker-config.sh && \
@@ -51,6 +44,19 @@ KANIKO_TARGET_TEMPLATE = '''
 #       --context /builds/ownport/docker-images/{target_path} \
 #       --build-arg BRANCH={branch} \
 #       --destination {image_uri} 
+
+#   image:
+#     name: gcr.io/kaniko-project/executor:debug
+#     entrypoint: [""]
+#   script:
+#   - mkdir -p /kaniko/.docker
+#   - echo "{\\\"auths\\\":{\\\"${CI_REGISTRY}\\\":{\\\"auth\\\":\\\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\\n')\\\"}}}" > /kaniko/.docker/config.json
+#   - /kaniko/executor \
+#     --context /builds/ownport/docker-images/{{ target_path }} \
+#     --dockerfile /builds/ownport/docker-images/{{ target_path }}/Dockerfile \
+#     --build-arg TAG_SUFFIX={{ tag_suffix }} \
+#     --destination {{ image_uri }}
+
 
 class GitLabYAMLGenerator:
 
