@@ -18,3 +18,5 @@ COPY --from=kaniko_binary /etc/nsswitch.conf /etc/nsswitch.conf
 
 ENV SSL_CERT_DIR=/kaniko/ssl/certs
 ENV DOCKER_CONFIG /kaniko/.docker/
+
+RUN /tmp/assets/tests/smoke-tests.sh
