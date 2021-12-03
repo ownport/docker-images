@@ -11,7 +11,6 @@ RUN echo "[INFO] Create kaniko directory structure" && \
     echo "[INFO] Install update-docker-config.sh script" && \
         mv /tmp/assets/bin/update-docker-config.sh /kaniko
 
-
 COPY --from=kaniko_binary /kaniko/executor /kaniko
 COPY --from=kaniko_binary /kaniko/ssl/certs/* /kaniko/ssl/certs/
 COPY --from=kaniko_binary /etc/nsswitch.conf /etc/nsswitch.conf
