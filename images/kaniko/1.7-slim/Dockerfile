@@ -10,7 +10,8 @@ COPY --from=kaniko_binary /kaniko/ssl/certs/* /kaniko/ssl/certs/
 COPY --from=kaniko_binary /etc/nsswitch.conf /etc/nsswitch.conf
 COPY assets/ /tmp/assets/
 
-RUN echo "[INFO] Create kaniko directory structure" && \
+RUN pwd && \
+    echo "[INFO] Create kaniko directory structure" && \
         mkdir -p /kaniko/ssl/certs && \
     echo "[INFO] Install update-docker-config.sh script" && \
         mv /tmp/assets/bin/update-docker-config.sh /kaniko && \
