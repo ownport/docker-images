@@ -1,5 +1,3 @@
-ARG TAG_SUFFIX=${TAG_SUFFIX}
-
 FROM gcr.io/kaniko-project/executor:v1.6.0-debug as kaniko_binary
 
 FROM busybox:1.34.1
