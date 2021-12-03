@@ -6,7 +6,7 @@ RUN echo "[INFO] Preparing data for copying" && \
         /tmp/kaniko \
         /tmp/kaniko/ssl/certs && \
     cp /kaniko/executor /tmp/kaniko && \
-    cp /kaniko/ssl/certs/* /kaniko/ssl/certs/
+    cp /kaniko/ssl/certs/* /tmp/kaniko/ssl/certs/
 
 FROM busybox:1.34.1 as target
 
