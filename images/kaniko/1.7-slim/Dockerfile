@@ -14,6 +14,7 @@ COPY assets/ /tmp/assets/
 
 RUN echo "[INFO] Create kaniko directory structure" && \
         mkdir -p /kaniko/ssl/certs && \
+        ls -la /kaniko/ssl/certs
     echo "[INFO] Install update-docker-config.sh script" && \
         mv /tmp/assets/bin/update-docker-config.sh /kaniko && \
     /tmp/assets/tests/smoke-tests.sh
