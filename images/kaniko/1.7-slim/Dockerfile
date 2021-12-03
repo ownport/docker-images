@@ -1,12 +1,19 @@
 FROM gcr.io/kaniko-project/executor:v1.7.0-debug as kaniko_binary
 
+RUN echo "[INFO] Preparing data for copying" && \
+    mkdir -p \
+        /tmp/etc \
+        /tmp/kaniko \
+        /tmp/kaniko/ssl/certs && \
+    cp /kaniko/executor /tmp/kaniko && \
+    cp /kaniko/ssl/certs/* /kaniko/ssl/certs/
+
 FROM busybox:1.34.1 as target
 
 ENV SSL_CERT_DIR=/kaniko/ssl/certs
 ENV DOCKER_CONFIG /kaniko/.docker/
 
-COPY --from=kaniko_binary /kaniko/executor /kaniko
-COPY --from=kaniko_binary /kaniko/ssl/certs/* /kaniko/ssl/certs/
+COPY --from=kaniko_binary /tmp/kaniko /kaniko
 COPY --from=kaniko_binary /etc/nsswitch.conf /etc/nsswitch.conf
 COPY assets/ /tmp/assets/
 
