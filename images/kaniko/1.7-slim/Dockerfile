@@ -1,6 +1,6 @@
 FROM gcr.io/kaniko-project/executor:v1.7.0-debug as kaniko_binary
 
-FROM busybox:1.34.1
+FROM busybox:1.34.1 as target
 
 ENV SSL_CERT_DIR=/kaniko/ssl/certs
 ENV DOCKER_CONFIG /kaniko/.docker/
