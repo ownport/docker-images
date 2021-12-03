@@ -2,12 +2,13 @@ FROM gcr.io/kaniko-project/executor:v1.7.0-debug as kaniko_binary
 
 COPY assets/ /tmp/assets/
 
-RUN echo "[INFO] Preparing data for copying" && \
-    mkdir -p \
-        /tmp/etc \
-        /tmp/kaniko \
-        /tmp/kaniko/.docker \
-        /tmp/kaniko/ssl/certs && \
+RUN /kaniko/executor version && \
+    echo "[INFO] Preparing data for copying" && \
+        mkdir -p \
+            /tmp/etc \
+            /tmp/kaniko \
+            /tmp/kaniko/.docker \
+            /tmp/kaniko/ssl/certs && \
     echo "[INFO] Copying kaniko files" && \
         cp /kaniko/executor /tmp/kaniko && \
         cp /kaniko/ssl/certs/* /tmp/kaniko/ssl/certs/ && \
