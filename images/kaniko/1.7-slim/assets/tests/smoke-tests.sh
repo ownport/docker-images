@@ -18,4 +18,7 @@ echo "[TEST] Checking the '/kaniko/update-docker-config.sh' script is executable
         echo "[ERROR] The file '/kaniko/update-docker-config.sh' does not executable"
         exit 1
     }
+
+ls -la /
+
 exit 0
