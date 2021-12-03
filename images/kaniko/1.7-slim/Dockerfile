@@ -14,4 +14,5 @@ RUN echo "[INFO] Create kaniko directory structure" && \
         mkdir -p /kaniko/ssl/certs && \
     echo "[INFO] Install update-docker-config.sh script" && \
         mv /tmp/assets/bin/update-docker-config.sh /kaniko && \
+        ls -la /kaniko && \
     /tmp/assets/tests/smoke-tests.sh
