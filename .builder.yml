@@ -26,7 +26,7 @@ gitlab:
   # - bigdata
   # - data-science
   # - workflows
-  # - scraping
+  - scraping
 
   # tools
   # - tools
