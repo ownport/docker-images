@@ -12,9 +12,6 @@ gitlab:
   - base 
   - shell
 
-  - kaniko
-  - kaniko-builder
-
   # python
   - python
   - python-dev
@@ -35,3 +32,7 @@ gitlab:
   # - tools
   # - bazel
   # - bazel-dind
+
+  # disabled, there is the issue to build kaniko images via kaniko builder
+  # - kaniko
+  # - kaniko-builder
