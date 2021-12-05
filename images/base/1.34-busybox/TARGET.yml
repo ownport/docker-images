@@ -1,0 +1,6 @@
+---
+type: docker-image
+name: base
+version: 1.34-busybox
+parameters:
+  shell: sh

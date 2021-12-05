@@ -9,6 +9,7 @@ from argparse import ArgumentParser
 from collections import defaultdict
 
 from itertools import chain
+from yaml import safe_load as yaml_load
 
 flatten = chain.from_iterable
 
@@ -20,9 +21,7 @@ except ImportError:
 
 from builder.git import Git
 from builder.gitlab import GitLabYAMLGenerator
-
 from builder.settings import Settings
-from builder.libs.yaml import safe_load as yaml_load
 
 
 logger = logging.getLogger(__name__)
@@ -250,15 +249,18 @@ def handle_cli_commands(args):
                 for f in git.changed_files()
         ])
         changed_targets = sorted(map(str, filter(None, changed_targets)))
-        changed_targets = list(set(changed_targets + \
-                            list(flatten([deps.parents(target) for target in changed_targets])) + \
-                            list(flatten([deps.children(target) for target in changed_targets]))))
-        changed_targets = [Target(path) for path in changed_targets]
+        changed_targets = [Target(path) for path in set(changed_targets)]
+        
+        # parent_targets = set(flatten([deps.parents(target) for target in changed_targets]))
+        # parent_targets = [Target(path) for path in parent_targets]
+
+        child_targets =  set(flatten([deps.children(target) for target in changed_targets]))
+        child_targets = [Target(path) for path in child_targets]
 
         generator = GitLabYAMLGenerator(branch=git.branch_name, 
                                         tag=args.tag, 
                                         settings=settings.get('gitlab', {}))
-        generator.run(changed_targets)
+        generator.run(changed_targets, child_targets)
 
         if not changed_targets:
             logger.warning('No changed targets')
@@ -275,12 +277,8 @@ def handle_cli_commands(args):
 
     elif args.deps:
 
-        print_json(TargetDeps().items())
+        print_json(list(TargetDeps().items()))
 
     elif args.reversed_deps:
 
-        scanner = TargetScanner()
-        targets = { str(target_path): Target(target_path).info.get('depends', [])
-                        for target_path in sorted(scanner.run()) }
-
-        print_json(TargetDeps(targets).reverse())
+        print_json(TargetDeps().reverse())
