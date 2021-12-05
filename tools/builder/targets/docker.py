@@ -141,7 +141,8 @@ def add_docker_arguments(parser: ArgumentParser) -> ArgumentParser:
 
     parser.add_argument('--target-path', type=str, required=True,
                                 help='The path to target')
-    parser.add_argument('--tag-suffix', type=str, help='docker image tag suffix')
+    parser.add_argument('--tag-suffix', type=str, default='',
+                                help='docker image tag suffix')
     parser.add_argument('--build', action='store_true', 
                                 help='build docker image for target')
     parser.add_argument('--remove', action='store_true', 
