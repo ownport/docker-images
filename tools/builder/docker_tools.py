@@ -69,6 +69,7 @@ class DockerTools:
         ''' stop all containers
         '''
         containers = self.list_containers()
+        logger.info(f"Stopping of containers: {containers}")
         try:
             for container in containers:
                 if container.get('State') in ('running'):
@@ -76,11 +77,13 @@ class DockerTools:
                     self._run_command(docker_command)
         except DockerCommandException:
             logger.warning(f'Failed to stop container, {container}')
+        logger.info("Stopping of containers was completed")
 
     def remove_exited_containers(self) -> None:
         ''' remove exited containers
         '''
         containers = self.list_containers()
+        logger.info(f"Removing of exited containers: {containers}")
         try:
             for container in containers:
                 if container.get('State') in ('exited', 'created'):
@@ -88,6 +91,7 @@ class DockerTools:
                     self._run_command(docker_command)
         except DockerCommandException:
             logger.warning(f'Failed to remove container, {container}')
+        logger.info("Removing of exited containers was completed")
 
     def remove_none_images(self) -> None:
         ''' remove None images
@@ -116,7 +120,7 @@ class DockerTools:
         ''' remove all containers
         '''
         self.stop_all_containers()
-        self.remove_all_containers()
+        self.remove_exited_containers()
 
 def add_docker_tools_arguments(parser: ArgumentParser) -> ArgumentParser:
 
