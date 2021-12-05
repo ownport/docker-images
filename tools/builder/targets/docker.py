@@ -26,11 +26,9 @@ ERROR_PUBLISH_DOCKER_IMAGE=1004
 
 class DockerImage:
 
-    def __init__(self, path:Path, branch:str, settings:dict={}) -> None:
+    def __init__(self, path:Path, tag_suffix:str = '', settings:dict={}) -> None:
 
-        # if branch.lower() not in SUPPORTED_BRANCHES:
-        #     raise RuntimeError(f"Unknown branch name, {branch}. Supported: {SUPPORTED_BRANCHES}")
-        self._branch = branch
+        self._tag_suffix = tag_suffix
         self._settings = settings
 
         if not Path(path).joinpath('Dockerfile').exists():
@@ -52,10 +50,12 @@ class DockerImage:
 
         self._docker_image = "/".join([
                                     self._settings.get('registry', None),
-                                    self._branch, 
                                     self._docker_image])
+
         self._docker_image_uri = ':'.join([self._docker_image, self._docker_version])
-        
+        if self._tag_suffix:
+            self._docker_image_uri += '-' + self._tag_suffix
+        logger.info(f'Docker Image URI: {self._docker_image_uri}')
 
     def _run_command(self, command, errors="strict") -> subprocess.Popen:
 
@@ -83,7 +83,7 @@ class DockerImage:
         with pushd(self._target.path):
             try:
                 docker_command = ['build', 
-                                    '--build-arg', f'BRANCH={self._branch}',
+                                    '--build-arg', f'TAG_SUFFIX={self._tag_suffix}',
                                     '--cache-from', self._docker_image_uri,
                                     '--tag', self._docker_image_uri, '.']
                 self._run_command(docker_command)
@@ -141,6 +141,7 @@ def add_docker_arguments(parser: ArgumentParser) -> ArgumentParser:
 
     parser.add_argument('--target-path', type=str, required=True,
                                 help='The path to target')
+    parser.add_argument('--tag-suffix', type=str, help='docker image tag suffix')
     parser.add_argument('--build', action='store_true', 
                                 help='build docker image for target')
     parser.add_argument('--remove', action='store_true', 
@@ -149,18 +150,16 @@ def add_docker_arguments(parser: ArgumentParser) -> ArgumentParser:
                                 help='test docker image for target')
     parser.add_argument('--publish', action='store_true', 
                                 help='publish docker image for target')
-    parser.add_argument('--branch', type=str, required=True, default='test', 
-                                help='docker registry branch')
     parser.set_defaults(handler=handle_cli_commands)
 
 
 def handle_cli_commands(args):
 
     target_path = args.target_path
-    branch = args.branch
+    tag_suffix = args.tag_suffix
     settings = Settings(args.settings)
 
-    docker = DockerImage(path=target_path, branch=branch, settings=settings.get('docker', {}))
+    docker = DockerImage(path=target_path, tag_suffix=tag_suffix, settings=settings.get('docker', {}))
 
     if args.build:
         docker.build()
