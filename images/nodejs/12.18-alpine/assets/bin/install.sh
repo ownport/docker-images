@@ -30,11 +30,8 @@ echo "[INFO] Downloading NodeJS package, ${NODEJS_DIST_URL}" && \
 # Add user and group
 deploy-utils.sh add-user-and-group 1000 node 1000 node
 
+echo "[INFO] Running smoke tests" && \
+    /tmp/assets/tests/smoke-tests.sh
+
 # Cleanup procedure
 deploy-utils.sh cleanup
-
-echo '[INFO] Run smoke tests' && \
-    echo 'node version: ' $(node --version) && \
-    echo 'npm version: ' $(npm --version) && \
-    echo 'npx version: ' $(npx --version)
-
