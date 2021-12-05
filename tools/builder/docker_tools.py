@@ -16,12 +16,6 @@ logger = logging.getLogger(__name__)
 class DockerCommandException(Exception):
     pass
 
-# Error codes
-# ERROR_BUILD_DOCKER_IMAGE=1001
-# ERROR_TEST_DOCKER_IMAGE=1002
-# ERROR_REMOVE_DOCKER_IMAGE=1003
-# ERROR_PUBLISH_DOCKER_IMAGE=1004
-
 
 class DockerTools:
 
@@ -44,7 +38,7 @@ class DockerTools:
 
         command = self._get_docker_command(args)
         logger.debug(f"Run command: {' '.join(command)}")
-        process, out = Command.invoke(command)
+        process, out, err = Command.invoke(command)
         return Command.cleanse(out)
 
     def list_containers(self):
@@ -77,8 +71,9 @@ class DockerTools:
         containers = self.list_containers()
         try:
             for container in containers:
-                docker_command = ['container', 'stop', container.get("ID")]
-                self._run_command(docker_command)
+                if container.get('State') in ('running'):
+                    docker_command = ['container', 'stop', container.get("ID")]
+                    self._run_command(docker_command)
         except DockerCommandException:
             logger.warning(f'Failed to stop container, {container}')
 
@@ -88,7 +83,7 @@ class DockerTools:
         containers = self.list_containers()
         try:
             for container in containers:
-                if container.get('State') == 'exited':
+                if container.get('State') in ('exited', 'created'):
                     docker_command = ['container', 'rm', container.get("ID")]
                     self._run_command(docker_command)
         except DockerCommandException:
@@ -121,13 +116,15 @@ class DockerTools:
         ''' remove all containers
         '''
         self.stop_all_containers()
-        self.remove_exited_containers()
+        self.remove_all_containers()
 
 def add_docker_tools_arguments(parser: ArgumentParser) -> ArgumentParser:
 
     # Containers
     parser.add_argument('--list-containers', action='store_true', 
                                 help='list containers')
+    parser.add_argument('--stop-all-containers', action='store_true', 
+                                help='stop all containers')
     parser.add_argument('--remove-exited-containers', action='store_true', 
                                 help='remove exited containers')
     parser.add_argument('--remove-all-containers', action='store_true', 
@@ -150,6 +147,9 @@ def handle_cli_commands(args):
 
     if args.list_containers:
         print(json.dumps(docker_tools.list_containers()))
+
+    if args.stop_all_containers:
+        print(json.dumps(docker_tools.stop_all_containers()))
 
     if args.remove_exited_containers:
         docker_tools.remove_exited_containers()
