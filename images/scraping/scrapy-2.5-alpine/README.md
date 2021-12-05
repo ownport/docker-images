@@ -7,8 +7,7 @@
 
 ## Python packages
 
-- scrapy:2.5.0
-- PyYAML:5.4.1
+- scrapy:2.5.1
 
 ## References
 

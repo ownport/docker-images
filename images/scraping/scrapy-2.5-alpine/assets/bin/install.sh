@@ -7,13 +7,15 @@ deploy-utils.sh update
 
 # Installation
 deploy-utils.sh install "zsh jq"
-deploy-utils.sh install "libxml2 libxslt"
 
 # Python dependencies
-deploy-utils.sh install "py3-cryptography py3-lxml"
+deploy-utils.sh install "py3-cryptography py3-lxml py3-yaml"
 
 # Install Scrapy
-py3-utils.sh install "Scrapy==2.5.0"
+py3-utils.sh install "Scrapy==2.5.1"
+
+echo "[INFO] Running smoke tests" && \
+    /tmp/assets/tests/smoke-tests.sh
 
 # Cleanup procedure
 deploy-utils.sh cleanup
