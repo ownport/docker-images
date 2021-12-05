@@ -1,0 +1,8 @@
+---
+type: docker-image
+name: fish
+version: 3.15-alpine
+parameters:
+  shell: fish
+depends: 
+- images/base/3.15-alpine
