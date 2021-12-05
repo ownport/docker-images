@@ -274,12 +274,8 @@ def handle_cli_commands(args):
 
     elif args.deps:
 
-        print_json(TargetDeps().items())
+        print_json(list(TargetDeps().items()))
 
     elif args.reversed_deps:
 
-        scanner = TargetScanner()
-        targets = { str(target_path): Target(target_path).info.get('depends', [])
-                        for target_path in sorted(scanner.run()) }
-
-        print_json(TargetDeps(targets).reverse())
+        print_json(TargetDeps().reverse())
