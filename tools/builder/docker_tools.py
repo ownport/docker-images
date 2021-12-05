@@ -97,6 +97,7 @@ class DockerTools:
         ''' remove None images
         '''
         images = self.list_images()
+        logger.info("Removing of none images")
         try:
             for image in images:
                 if image.get('Repository') == '<none>' or image.get('Tag') == '<none>':
@@ -104,17 +105,20 @@ class DockerTools:
                     self._run_command(docker_command)
         except DockerCommandException:
             logger.warning(f'Failed to remove image, {image}')
+        logger.info("Removing of none images was completed")
 
     def remove_all_images(self) -> None:
         ''' remove all images
         '''
         images = self.list_images()
+        logger.info("Removing of all images")
         try:
             for image in images:
                 docker_command = ['image', 'rm', image.get("ID")]
                 self._run_command(docker_command)
         except DockerCommandException:
             logger.warning(f'Failed to remove image, {image}')
+        logger.info("Removing of all images was completed")
 
     def remove_all_containers(self) -> None:
         ''' remove all containers
@@ -153,7 +157,7 @@ def handle_cli_commands(args):
         print(json.dumps(docker_tools.list_containers()))
 
     if args.stop_all_containers:
-        print(json.dumps(docker_tools.stop_all_containers()))
+        docker_tools.stop_all_containers()
 
     if args.remove_exited_containers:
         docker_tools.remove_exited_containers()
@@ -165,6 +169,7 @@ def handle_cli_commands(args):
         print(json.dumps(docker_tools.list_images()))
 
     if args.remove_none_images:
+        docker_tools.remove_exited_containers()
         docker_tools.remove_none_images()
 
     if args.remove_all_images:

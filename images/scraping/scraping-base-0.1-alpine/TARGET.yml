@@ -3,6 +3,6 @@ type: docker_image
 name: scraping-base
 version: 0.1-alpine
 parameters:
-  shell: bash
+  shell: zsh
 depends:
 - images/python/3.9-alpine
