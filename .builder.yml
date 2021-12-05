@@ -21,7 +21,7 @@ gitlab:
   # - sbt
   # - scala
 
-  # - nodejs
+  - nodejs
   # - rust
   # - bigdata
   # - data-science
