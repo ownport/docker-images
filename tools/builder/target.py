@@ -249,15 +249,18 @@ def handle_cli_commands(args):
                 for f in git.changed_files()
         ])
         changed_targets = sorted(map(str, filter(None, changed_targets)))
-        changed_targets = list(set(changed_targets + \
-                            list(flatten([deps.parents(target) for target in changed_targets])) + \
-                            list(flatten([deps.children(target) for target in changed_targets]))))
-        changed_targets = [Target(path) for path in changed_targets]
+        changed_targets = [Target(path) for path in set(changed_targets)]
+        
+        # parent_targets = set(flatten([deps.parents(target) for target in changed_targets]))
+        # parent_targets = [Target(path) for path in parent_targets]
+
+        child_targets =  set(flatten([deps.children(target) for target in changed_targets]))
+        child_targets = [Target(path) for path in child_targets]
 
         generator = GitLabYAMLGenerator(branch=git.branch_name, 
                                         tag=args.tag, 
                                         settings=settings.get('gitlab', {}))
-        generator.run(changed_targets)
+        generator.run(changed_targets, child_targets)
 
         if not changed_targets:
             logger.warning('No changed targets')

@@ -57,6 +57,15 @@ class GitLabYAMLGenerator:
         self._tag = tag
         self._settings = settings
 
+        self._registry = self._settings.get('registry', None)
+        if not self._registry:
+            logger.error('Missed regsitry parameter in builder gitlab configuration')
+            return
+
+        self._kaniko_template = Environment(
+                            loader=BaseLoader(), autoescape=select_autoescape()
+                        ).from_string(KANIKO_TARGET_TEMPLATE)
+
         self._tag_suffix = '-'
         if RE_DEVEL_BRANCH.match(branch):
             self._tag_suffix += 'devel'
@@ -84,24 +93,9 @@ class GitLabYAMLGenerator:
 
         return ":".join([image_uri, image_version])
 
-    def run(self, targets:list) -> None:
-        ''' generate GitLab CI pipeline
+    def print_step(self, targets:list, tag_suffix:bool=False) -> None:
+        ''' print step 
         '''
-        registry = self._settings.get('registry', None)
-        if not registry:
-            logger.error('Missed regsitry parameter in builder gitlab configuration')
-            return
-
-        kaniko_template = Environment(
-                            loader=BaseLoader(), autoescape=select_autoescape()
-                        ).from_string(KANIKO_TARGET_TEMPLATE)
-
-
-        print(TEMPLATE_PIPELINE.format(
-                        STAGES='\n- '.join(
-                                        self._settings.get('stages', [])
-                        )
-        ))
         for target in targets:
             
             # skip target if no definiton in settings file
@@ -111,12 +105,23 @@ class GitLabYAMLGenerator:
             target_name = ':'.join([
                                 target.info.get('stage'), 
                                 target.info.get('target_name')])
-            image_uri = self.get_image_uri(registry, target.name, target.version)
+            image_uri = self.get_image_uri(self._registry, target.name, target.version)
  
 
             print(
-                kaniko_template.render(target_name=target_name, 
+                self._kaniko_template.render(target_name=target_name, 
                                         stage=target.info.get('stage'),
-                                        tag_suffix=self._tag_suffix,
+                                        tag_suffix=self._tag_suffix if tag_suffix else "",
                                         target_path=target.path,
                                         image_uri=image_uri))
+
+    def run(self, changed_targets:list, child_targets:list) -> None:
+        ''' generate GitLab CI pipeline
+        '''
+        print(TEMPLATE_PIPELINE.format(
+                        STAGES='\n- '.join(
+                                        self._settings.get('stages', [])
+                        )
+        ))
+        self.print_step(targets=changed_targets)
+        self.print_step(targets=child_targets, tag_suffix=True)
