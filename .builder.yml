@@ -30,6 +30,7 @@ gitlab:
 
   # monitoring
   - prometheus
+  - grafana
 
   # tools
   # - tools
