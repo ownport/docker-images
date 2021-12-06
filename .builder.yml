@@ -28,6 +28,9 @@ gitlab:
   # - workflows
   - scraping
 
+  # monitoring
+  - prometheus
+
   # tools
   # - tools
   # - bazel
