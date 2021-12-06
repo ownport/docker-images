@@ -1,0 +1,8 @@
+---
+type: docker-image
+name: grafana
+version: 8.2-alpine
+parameters:
+  shell: sh
+depends:
+- images/base/3.15-alpine
