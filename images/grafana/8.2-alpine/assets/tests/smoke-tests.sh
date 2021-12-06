@@ -7,5 +7,5 @@ echo "[INFO] Run tests"
 echo '[TEST] Print out uname' && \
     uname -a
 
-echo '[TEST] Check Prometheus version' && \
-    prometheus --version
+echo '[TEST] Check Grafana version' && \
+    grafana-cli --version
