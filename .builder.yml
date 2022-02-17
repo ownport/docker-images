@@ -24,7 +24,7 @@ gitlab:
   - nodejs
   # - rust
   # - bigdata
-  # - data-science
+  - data-science
   # - workflows
   - scraping
 
