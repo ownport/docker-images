@@ -4,11 +4,11 @@
 
 - bash
 - jq
-- numpy:1.19.0
-- scipy:1.5.1
-- scikit-learn:0.23.0
-- pandas:1.0.5
-- ipython:7.16.1
+- numpy:1.22.0
+- scipy:1.8.0
+- scikit-learn:1.0.2
+- pandas:1.4.1
+- ipython:8.0.1
 
 ## References
 

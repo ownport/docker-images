@@ -1,0 +1,8 @@
+---
+type: docker-image
+name: ds-tools
+version: 0.2-ubuntu
+parameters:
+  shell: bash
+depends: 
+- images/python/3.9-ubuntu
